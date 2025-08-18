@@ -12,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Plus, Trash2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { insertMobileSchema } from "@shared/schema";
+import { AIEnhancementTools } from "./AIEnhancementTools";
 import { z } from "zod";
 import type { Mobile, Brand } from "@shared/schema";
 
@@ -185,9 +186,45 @@ export function AdminMobileForm({ mobile, brands, onSuccess }: AdminMobileFormPr
     });
   };
 
+  const handleAIEnhancement = (enhancement: any) => {
+    // You can use the enhancement data to populate form fields if needed
+    console.log("AI Enhancement received:", enhancement);
+  };
+
+  const handleSpecsGenerated = (specs: any) => {
+    if (specs.name) form.setValue("name", specs.name);
+    if (specs.brand) form.setValue("brand", specs.brand);
+    if (specs.model) form.setValue("model", specs.model);
+    if (specs.price) form.setValue("price", specs.price);
+    if (specs.shortSpecs) {
+      if (specs.shortSpecs.ram) form.setValue("shortSpecs.ram", specs.shortSpecs.ram);
+      if (specs.shortSpecs.storage) form.setValue("shortSpecs.storage", specs.shortSpecs.storage);
+      if (specs.shortSpecs.camera) form.setValue("shortSpecs.camera", specs.shortSpecs.camera);
+      if (specs.shortSpecs.battery) form.setValue("shortSpecs.battery", specs.shortSpecs.battery);
+      if (specs.shortSpecs.display) form.setValue("shortSpecs.display", specs.shortSpecs.display);
+      if (specs.shortSpecs.processor) form.setValue("shortSpecs.processor", specs.shortSpecs.processor);
+    }
+    if (specs.specifications) {
+      form.setValue("specifications", specs.specifications);
+    }
+    // Generate slug from name
+    if (specs.name) {
+      const slug = specs.name.toLowerCase().replace(/[^a-z0-9]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      form.setValue("slug", slug);
+    }
+  };
+
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-      {/* Basic Information */}
+    <div className="space-y-6">
+      {/* AI Enhancement Tools */}
+      <AIEnhancementTools
+        mobile={mobile}
+        onEnhancementComplete={handleAIEnhancement}
+        onSpecsGenerated={handleSpecsGenerated}
+      />
+
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        {/* Basic Information */}
       <Card>
         <CardHeader>
           <CardTitle>Basic Information</CardTitle>
@@ -612,7 +649,8 @@ export function AdminMobileForm({ mobile, brands, onSuccess }: AdminMobileFormPr
         <Button type="button" variant="outline" onClick={onSuccess}>
           Cancel
         </Button>
-      </div>
-    </form>
+        </div>
+      </form>
+    </div>
   );
 }

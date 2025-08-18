@@ -2,6 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertBrandSchema, insertMobileSchema } from "@shared/schema";
+import { aiService } from "./ai-service";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -140,6 +141,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(204).send();
     } catch (error) {
       res.status(500).json({ message: "Failed to delete mobile" });
+    }
+  });
+
+  // AI Enhancement API endpoints
+  app.post("/api/admin/ai/enhance-mobile", async (req, res) => {
+    try {
+      const { mobileData } = req.body;
+      if (!mobileData) {
+        return res.status(400).json({ message: "Mobile data is required" });
+      }
+
+      const enhancement = await aiService.enhanceMobileData(mobileData);
+      res.json(enhancement);
+    } catch (error: any) {
+      console.error("AI enhancement error:", error);
+      res.status(500).json({ message: error.message || "Failed to enhance mobile data" });
+    }
+  });
+
+  app.post("/api/admin/ai/generate-specs", async (req, res) => {
+    try {
+      const { brand, model, year } = req.body;
+      if (!brand || !model) {
+        return res.status(400).json({ message: "Brand and model are required" });
+      }
+
+      const specs = await aiService.generateMobileSpecs(brand, model, year);
+      res.json(specs);
+    } catch (error: any) {
+      console.error("AI spec generation error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate mobile specs" });
+    }
+  });
+
+  app.post("/api/admin/ai/detailed-specs", async (req, res) => {
+    try {
+      const { mobileData } = req.body;
+      if (!mobileData) {
+        return res.status(400).json({ message: "Mobile data is required" });
+      }
+
+      const detailedSpecs = await aiService.generateDetailedSpecs(mobileData);
+      res.json({ specifications: detailedSpecs });
+    } catch (error: any) {
+      console.error("AI detailed specs error:", error);
+      res.status(500).json({ message: error.message || "Failed to generate detailed specs" });
+    }
+  });
+
+  app.post("/api/admin/ai/similar-phones", async (req, res) => {
+    try {
+      const { mobileData } = req.body;
+      if (!mobileData) {
+        return res.status(400).json({ message: "Mobile data is required" });
+      }
+
+      const allMobiles = await storage.getAllMobiles();
+      const mobilesForAI = allMobiles.map(m => ({
+        name: m.name,
+        brand: m.brand,
+        model: m.model,
+        price: m.price || undefined,
+        shortSpecs: m.shortSpecs,
+      }));
+      const suggestions = await aiService.suggestSimilarPhones(mobileData, mobilesForAI);
+      res.json({ suggestions });
+    } catch (error: any) {
+      console.error("AI similar phones error:", error);
+      res.status(500).json({ message: error.message || "Failed to suggest similar phones" });
     }
   });
 
