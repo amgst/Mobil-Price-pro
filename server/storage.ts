@@ -1,5 +1,6 @@
-import { type User, type InsertUser, type Brand, type InsertBrand, type Mobile, type InsertMobile } from "@shared/schema";
-import { randomUUID } from "crypto";
+import { type User, type InsertUser, type Brand, type InsertBrand, type Mobile, type InsertMobile, users, brands, mobiles } from "@shared/schema";
+import { eq, like, or, and } from "drizzle-orm";
+import { db } from "./db";
 
 export interface IStorage {
   getUser(id: string): Promise<User | undefined>;
@@ -10,360 +11,329 @@ export interface IStorage {
   getAllBrands(): Promise<Brand[]>;
   getBrandBySlug(slug: string): Promise<Brand | undefined>;
   createBrand(brand: InsertBrand): Promise<Brand>;
+  updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand>;
+  deleteBrand(id: string): Promise<void>;
   
   // Mobile operations
   getAllMobiles(): Promise<Mobile[]>;
+  getMobileById(id: string): Promise<Mobile | undefined>;
   getMobilesByBrand(brandSlug: string): Promise<Mobile[]>;
   getMobileBySlug(brandSlug: string, mobileSlug: string): Promise<Mobile | undefined>;
   searchMobiles(query: string): Promise<Mobile[]>;
   getFeaturedMobiles(): Promise<Mobile[]>;
   createMobile(mobile: InsertMobile): Promise<Mobile>;
+  updateMobile(id: string, mobile: Partial<InsertMobile>): Promise<Mobile>;
+  deleteMobile(id: string): Promise<void>;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<string, User>;
-  private brands: Map<string, Brand>;
-  private mobiles: Map<string, Mobile>;
-
+export class DatabaseStorage implements IStorage {
   constructor() {
-    this.users = new Map();
-    this.brands = new Map();
-    this.mobiles = new Map();
     this.initializeData();
   }
 
-  private initializeData() {
-    // Initialize sample brands
-    const sampleBrands: Brand[] = [
-      {
-        id: "brand-1",
-        name: "Samsung",
-        slug: "samsung",
-        logo: "S",
-        phoneCount: "142",
-        description: "South Korean multinational electronics company",
-        createdAt: new Date(),
-      },
-      {
-        id: "brand-2", 
-        name: "Apple",
-        slug: "apple",
-        logo: "A",
-        phoneCount: "28",
-        description: "American multinational technology company",
-        createdAt: new Date(),
-      },
-      {
-        id: "brand-3",
-        name: "Xiaomi", 
-        slug: "xiaomi",
-        logo: "X",
-        phoneCount: "89",
-        description: "Chinese electronics company",
-        createdAt: new Date(),
-      },
-      {
-        id: "brand-4",
-        name: "Oppo",
-        slug: "oppo", 
-        logo: "O",
-        phoneCount: "67",
-        description: "Chinese consumer electronics company",
-        createdAt: new Date(),
-      },
-      {
-        id: "brand-5",
-        name: "Vivo",
-        slug: "vivo",
-        logo: "V", 
-        phoneCount: "54",
-        description: "Chinese technology company",
-        createdAt: new Date(),
-      },
-      {
-        id: "brand-6",
-        name: "Realme",
-        slug: "realme",
-        logo: "R",
-        phoneCount: "43", 
-        description: "Chinese smartphone manufacturer",
-        createdAt: new Date(),
-      },
-    ];
+  private async initializeData() {
+    try {
+      // Check if we already have data
+      const existingBrands = await db.select().from(brands).limit(1);
+      if (existingBrands.length > 0) {
+        return; // Data already exists
+      }
 
-    sampleBrands.forEach(brand => this.brands.set(brand.id, brand));
+      // Initialize sample brands
+      const sampleBrands = [
+        {
+          name: "Samsung",
+          slug: "samsung",
+          logo: "S",
+          phoneCount: "142",
+          description: "South Korean multinational electronics company",
+        },
+        {
+          name: "Apple",
+          slug: "apple",
+          logo: "A",
+          phoneCount: "28",
+          description: "American multinational technology company",
+        },
+        {
+          name: "Xiaomi", 
+          slug: "xiaomi",
+          logo: "X",
+          phoneCount: "89",
+          description: "Chinese electronics company",
+        },
+        {
+          name: "Oppo",
+          slug: "oppo", 
+          logo: "O",
+          phoneCount: "67",
+          description: "Chinese consumer electronics company",
+        },
+        {
+          name: "Vivo",
+          slug: "vivo",
+          logo: "V", 
+          phoneCount: "52",
+          description: "Chinese technology company",
+        },
+        {
+          name: "OnePlus",
+          slug: "oneplus",
+          logo: "1+",
+          phoneCount: "23",
+          description: "Chinese smartphone manufacturer",
+        },
+      ];
 
-    // Initialize sample mobiles
-    const sampleMobiles: Mobile[] = [
-      {
-        id: "mobile-1",
-        slug: "galaxy-s24-ultra",
-        name: "Galaxy S24 Ultra",
-        brand: "samsung",
-        model: "S24 Ultra",
-        imageUrl: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-        imagekitPath: null,
-        releaseDate: "2024-01-01",
-        price: "₨ 449,999",
-        shortSpecs: {
-          ram: "12GB",
-          storage: "256GB", 
-          camera: "200MP",
-          battery: "5000mAh",
-          display: "6.8\" Dynamic AMOLED 2X",
-          processor: "Snapdragon 8 Gen 3",
-        },
-        carouselImages: [
-          "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-          "https://images.unsplash.com/photo-1598300042247-d088f8ab3a91?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-          "https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-        ],
-        specifications: [
-          {
-            category: "Display",
-            specs: [
-              { feature: "Screen Size", value: "6.8 inches" },
-              { feature: "Resolution", value: "3120 x 1440 pixels" },
-              { feature: "Display Type", value: "Dynamic AMOLED 2X" },
-              { feature: "Refresh Rate", value: "120Hz" },
-            ],
-          },
-          {
-            category: "Performance",
-            specs: [
-              { feature: "Processor", value: "Snapdragon 8 Gen 3" },
-              { feature: "RAM", value: "12GB" },
-              { feature: "Storage", value: "256GB" },
-              { feature: "OS", value: "Android 14" },
-            ],
-          },
-          {
-            category: "Camera",
-            specs: [
-              { feature: "Main Camera", value: "200MP" },
-              { feature: "Ultra Wide", value: "12MP" },
-              { feature: "Telephoto", value: "50MP" },
-              { feature: "Front Camera", value: "12MP" },
-            ],
-          },
-        ],
-        dimensions: {
-          height: "162.3mm",
-          width: "79.0mm", 
-          thickness: "8.6mm",
-          weight: "232g",
-        },
-        buildMaterials: {
-          frame: "Titanium",
-          back: "Glass",
-          protection: "Gorilla Glass Victus 2",
-        },
-        createdAt: new Date(),
-      },
-      {
-        id: "mobile-2",
-        slug: "iphone-15-pro-max",
-        name: "iPhone 15 Pro Max",
-        brand: "apple",
-        model: "15 Pro Max",
-        imageUrl: "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-        imagekitPath: null,
-        releaseDate: "2023-09-01",
-        price: "₨ 519,999",
-        shortSpecs: {
-          ram: "8GB",
-          storage: "256GB",
-          camera: "48MP",
-          battery: "4441mAh",
-          display: "6.7\" Super Retina XDR",
-          processor: "A17 Pro",
-        },
-        carouselImages: [
-          "https://images.unsplash.com/photo-1592750475338-74b7b21085ab?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-        ],
-        specifications: [
-          {
-            category: "Display",
-            specs: [
-              { feature: "Screen Size", value: "6.7 inches" },
-              { feature: "Resolution", value: "2796 x 1290 pixels" },
-              { feature: "Display Type", value: "Super Retina XDR OLED" },
-              { feature: "Refresh Rate", value: "120Hz" },
-            ],
-          },
-        ],
-        dimensions: null,
-        buildMaterials: null,
-        createdAt: new Date(),
-      },
-      {
-        id: "mobile-3",
-        slug: "xiaomi-14-pro",
-        name: "Xiaomi 14 Pro",
-        brand: "xiaomi",
-        model: "14 Pro",
-        imageUrl: "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-        imagekitPath: null,
-        releaseDate: "2024-02-01",
-        price: "₨ 189,999",
-        shortSpecs: {
-          ram: "12GB",
-          storage: "256GB",
-          camera: "50MP",
-          battery: "4880mAh",
-          display: "6.73\" LTPO OLED",
-          processor: "Snapdragon 8 Gen 3",
-        },
-        carouselImages: [
-          "https://images.unsplash.com/photo-1574944985070-8f3ebc6b79d2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-        ],
-        specifications: [
-          {
-            category: "Display",
-            specs: [
-              { feature: "Screen Size", value: "6.73 inches" },
-              { feature: "Resolution", value: "3200 x 1440 pixels" },
-              { feature: "Display Type", value: "LTPO OLED" },
-              { feature: "Refresh Rate", value: "120Hz" },
-            ],
-          },
-        ],
-        dimensions: null,
-        buildMaterials: null,
-        createdAt: new Date(),
-      },
-      {
-        id: "mobile-4",
-        slug: "oneplus-12",
-        name: "OnePlus 12",
-        brand: "oneplus",
-        model: "12",
-        imageUrl: "https://images.unsplash.com/photo-1585060544812-6b45742d762f?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=400",
-        imagekitPath: null,
-        releaseDate: "2024-01-15",
-        price: "₨ 299,999",
-        shortSpecs: {
-          ram: "16GB",
-          storage: "512GB",
-          camera: "50MP",
-          battery: "5400mAh",
-          display: "6.82\" LTPO OLED",
-          processor: "Snapdragon 8 Gen 3",
-        },
-        carouselImages: [
-          "https://images.unsplash.com/photo-1585060544812-6b45742d762f?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=600",
-        ],
-        specifications: [
-          {
-            category: "Display",
-            specs: [
-              { feature: "Screen Size", value: "6.82 inches" },
-              { feature: "Resolution", value: "3168 x 1440 pixels" },
-              { feature: "Display Type", value: "LTPO OLED" },
-              { feature: "Refresh Rate", value: "120Hz" },
-            ],
-          },
-        ],
-        dimensions: null,
-        buildMaterials: null,
-        createdAt: new Date(),
-      },
-    ];
+      await db.insert(brands).values(sampleBrands);
 
-    sampleMobiles.forEach(mobile => this.mobiles.set(mobile.id, mobile));
+      // Initialize sample mobiles
+      const sampleMobiles = [
+        {
+          slug: "galaxy-s24-ultra",
+          name: "Samsung Galaxy S24 Ultra",
+          brand: "samsung",
+          model: "Galaxy S24 Ultra",
+          imageUrl: "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g.jpg",
+          imagekitPath: "/mobiles/samsung/galaxy-s24-ultra.jpg",
+          releaseDate: "2024-01-17",
+          price: "Rs 449,999",
+          shortSpecs: {
+            ram: "12GB",
+            storage: "256GB",
+            camera: "200MP + 50MP + 10MP + 12MP",
+            battery: "5000mAh",
+            display: "6.8 inches",
+            processor: "Snapdragon 8 Gen 3",
+          },
+          carouselImages: [
+            "https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g.jpg",
+            "https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-5g-2.jpg",
+          ],
+          specifications: [
+            {
+              category: "Display",
+              specs: [
+                { feature: "Screen Size", value: "6.8 inches" },
+                { feature: "Resolution", value: "3120 x 1440 pixels" },
+                { feature: "Display Type", value: "Dynamic LTPO AMOLED 2X" },
+                { feature: "Refresh Rate", value: "120Hz" },
+              ],
+            },
+            {
+              category: "Camera",
+              specs: [
+                { feature: "Main Camera", value: "200MP, f/1.7" },
+                { feature: "Ultra Wide", value: "12MP, f/2.2" },
+                { feature: "Telephoto", value: "50MP, f/3.4" },
+                { feature: "Front Camera", value: "12MP, f/2.2" },
+              ],
+            },
+          ],
+          dimensions: {
+            height: "162.3mm",
+            width: "79.0mm", 
+            thickness: "8.6mm",
+            weight: "233g",
+          },
+          buildMaterials: {
+            frame: "Aluminum",
+            back: "Glass (Gorilla Glass Victus 2)",
+            protection: "IP68",
+          },
+        },
+        {
+          slug: "iphone-15-pro-max",
+          name: "Apple iPhone 15 Pro Max",
+          brand: "apple",
+          model: "iPhone 15 Pro Max",
+          imageUrl: "https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg",
+          imagekitPath: "/mobiles/apple/iphone-15-pro-max.jpg",
+          releaseDate: "2023-09-22",
+          price: "Rs 529,999",
+          shortSpecs: {
+            ram: "8GB",
+            storage: "256GB",
+            camera: "48MP + 12MP + 12MP",
+            battery: "4441mAh",
+            display: "6.7 inches",
+            processor: "A17 Pro",
+          },
+          carouselImages: [
+            "https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg",
+            "https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-max-2.jpg",
+          ],
+          specifications: [
+            {
+              category: "Display", 
+              specs: [
+                { feature: "Screen Size", value: "6.7 inches" },
+                { feature: "Resolution", value: "2796 x 1290 pixels" },
+                { feature: "Display Type", value: "LTPO Super Retina XDR OLED" },
+                { feature: "Refresh Rate", value: "120Hz" },
+              ],
+            },
+          ],
+          dimensions: null,
+          buildMaterials: null,
+        },
+        {
+          slug: "redmi-note-13-pro",
+          name: "Xiaomi Redmi Note 13 Pro",
+          brand: "xiaomi",
+          model: "Redmi Note 13 Pro",
+          imageUrl: "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-redmi-note-13-pro-5g.jpg",
+          imagekitPath: "/mobiles/xiaomi/redmi-note-13-pro.jpg",
+          releaseDate: "2023-09-21",
+          price: "Rs 89,999",
+          shortSpecs: {
+            ram: "8GB",
+            storage: "256GB",
+            camera: "200MP + 8MP + 2MP",
+            battery: "5100mAh",
+            display: "6.67 inches",
+            processor: "Snapdragon 7s Gen 2",
+          },
+          carouselImages: [
+            "https://fdn2.gsmarena.com/vv/bigpic/xiaomi-redmi-note-13-pro-5g.jpg",
+          ],
+          specifications: [
+            {
+              category: "Display",
+              specs: [
+                { feature: "Screen Size", value: "6.82 inches" },
+                { feature: "Resolution", value: "3168 x 1440 pixels" },
+                { feature: "Display Type", value: "LTPO OLED" },
+                { feature: "Refresh Rate", value: "120Hz" },
+              ],
+            },
+          ],
+          dimensions: null,
+          buildMaterials: null,
+        },
+      ];
+
+      for (const mobile of sampleMobiles) {
+        await db.insert(mobiles).values(mobile);
+      }
+    } catch (error) {
+      console.log("Data initialization skipped or failed:", error);
+    }
   }
 
+  // User operations
   async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
-  }
-
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
     return user;
   }
 
+  async getUserByUsername(username: string): Promise<User | undefined> {
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
+  }
+
+  async createUser(insertUser: InsertUser): Promise<User> {
+    const [user] = await db.insert(users).values(insertUser).returning();
+    return user;
+  }
+
+  // Brand operations
   async getAllBrands(): Promise<Brand[]> {
-    return Array.from(this.brands.values());
+    return await db.select().from(brands);
   }
 
   async getBrandBySlug(slug: string): Promise<Brand | undefined> {
-    return Array.from(this.brands.values()).find(brand => brand.slug === slug);
+    const [brand] = await db.select().from(brands).where(eq(brands.slug, slug));
+    return brand;
   }
 
   async createBrand(brand: InsertBrand): Promise<Brand> {
-    const id = randomUUID();
-    const newBrand: Brand = { 
-      ...brand, 
-      id, 
-      logo: brand.logo || null,
-      phoneCount: brand.phoneCount || null,
-      description: brand.description || null,
-      createdAt: new Date() 
-    };
-    this.brands.set(id, newBrand);
+    const [newBrand] = await db.insert(brands).values(brand).returning();
     return newBrand;
   }
 
+  async updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand> {
+    const [updatedBrand] = await db
+      .update(brands)
+      .set(brand)
+      .where(eq(brands.id, id))
+      .returning();
+    return updatedBrand;
+  }
+
+  async deleteBrand(id: string): Promise<void> {
+    await db.delete(brands).where(eq(brands.id, id));
+  }
+
+  // Mobile operations
   async getAllMobiles(): Promise<Mobile[]> {
-    return Array.from(this.mobiles.values());
+    return await db.select().from(mobiles);
+  }
+
+  async getMobileById(id: string): Promise<Mobile | undefined> {
+    const [mobile] = await db.select().from(mobiles).where(eq(mobiles.id, id));
+    return mobile;
   }
 
   async getMobilesByBrand(brandSlug: string): Promise<Mobile[]> {
-    return Array.from(this.mobiles.values()).filter(mobile => mobile.brand === brandSlug);
+    return await db.select().from(mobiles).where(eq(mobiles.brand, brandSlug));
   }
 
   async getMobileBySlug(brandSlug: string, mobileSlug: string): Promise<Mobile | undefined> {
-    return Array.from(this.mobiles.values()).find(
-      mobile => mobile.brand === brandSlug && mobile.slug === mobileSlug
-    );
+    const [mobile] = await db
+      .select()
+      .from(mobiles)
+      .where(and(eq(mobiles.brand, brandSlug), eq(mobiles.slug, mobileSlug)));
+    return mobile;
   }
 
   async searchMobiles(query: string): Promise<Mobile[]> {
-    const searchTerm = query.toLowerCase();
-    return Array.from(this.mobiles.values()).filter(mobile => 
-      mobile.name.toLowerCase().includes(searchTerm) ||
-      mobile.brand.toLowerCase().includes(searchTerm) ||
-      mobile.model.toLowerCase().includes(searchTerm)
-    );
+    const searchTerm = `%${query.toLowerCase()}%`;
+    return await db
+      .select()
+      .from(mobiles)
+      .where(
+        or(
+          like(mobiles.name, searchTerm),
+          like(mobiles.brand, searchTerm),
+          like(mobiles.model, searchTerm)
+        )
+      );
   }
 
   async getFeaturedMobiles(): Promise<Mobile[]> {
-    // Return the first 8 mobiles as featured
-    return Array.from(this.mobiles.values()).slice(0, 8);
+    return await db.select().from(mobiles).limit(8);
   }
 
   async createMobile(mobile: InsertMobile): Promise<Mobile> {
-    const id = randomUUID();
-    const newMobile: Mobile = { 
-      ...mobile, 
-      id, 
-      imagekitPath: mobile.imagekitPath || null,
-      price: mobile.price || null,
-      dimensions: mobile.dimensions || null,
-      buildMaterials: mobile.buildMaterials || null,
-      shortSpecs: {
-        ram: mobile.shortSpecs.ram,
-        storage: mobile.shortSpecs.storage,
-        camera: mobile.shortSpecs.camera,
+    const [newMobile] = await db.insert(mobiles).values(mobile).returning();
+    return newMobile;
+  }
+
+  async updateMobile(id: string, mobile: Partial<InsertMobile>): Promise<Mobile> {
+    const cleanMobile = {
+      ...mobile,
+      shortSpecs: mobile.shortSpecs ? {
+        ram: mobile.shortSpecs.ram || "",
+        storage: mobile.shortSpecs.storage || "",
+        camera: mobile.shortSpecs.camera || "",
         battery: mobile.shortSpecs.battery as string | undefined,
         display: mobile.shortSpecs.display as string | undefined,
         processor: mobile.shortSpecs.processor as string | undefined,
-      },
-      carouselImages: mobile.carouselImages as string[],
-      specifications: mobile.specifications as { category: string; specs: { feature: string; value: string; }[]; }[],
-      createdAt: new Date() 
+      } : undefined,
     };
-    this.mobiles.set(id, newMobile);
-    return newMobile;
+    
+    const [updatedMobile] = await db
+      .update(mobiles)
+      .set(cleanMobile as any)
+      .where(eq(mobiles.id, id))
+      .returning();
+    return updatedMobile;
+  }
+
+  async deleteMobile(id: string): Promise<void> {
+    await db.delete(mobiles).where(eq(mobiles.id, id));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();
