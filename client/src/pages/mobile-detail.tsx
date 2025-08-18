@@ -93,7 +93,7 @@ export default function MobileDetail() {
           </section>
 
           {/* Detailed Specifications */}
-          <section className="mb-12">
+          <section id="detailed-specifications" className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Detailed Specifications</h2>
             <SpecsTable specifications={mobile.specifications} />
           </section>

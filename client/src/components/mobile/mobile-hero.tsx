@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useCompare } from "@/hooks/use-compare";
 import type { Mobile } from "@shared/schema";
 
 interface MobileHeroProps {
@@ -10,6 +11,22 @@ interface MobileHeroProps {
 
 export function MobileHero({ mobile }: MobileHeroProps) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const { addToCompare, isInCompare } = useCompare();
+  const inCompare = isInCompare(mobile.id);
+
+  const scrollToSpecs = () => {
+    const specsSection = document.getElementById('detailed-specifications');
+    if (specsSection) {
+      specsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start' 
+      });
+    }
+  };
+
+  const handleAddToCompare = () => {
+    addToCompare(mobile);
+  };
 
   return (
     <section className="mb-12">
@@ -99,16 +116,19 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                 <Button 
                   size="lg" 
                   className="flex-1"
+                  onClick={scrollToSpecs}
                   data-testid="button-view-full-specs"
                 >
                   View Full Specifications
                 </Button>
                 <Button 
-                  variant="outline" 
+                  variant={inCompare ? "default" : "outline"}
                   size="lg"
+                  onClick={handleAddToCompare}
+                  disabled={inCompare}
                   data-testid="button-add-to-compare"
                 >
-                  Add to Compare
+                  {inCompare ? "Added to Compare" : "Add to Compare"}
                 </Button>
               </div>
 
