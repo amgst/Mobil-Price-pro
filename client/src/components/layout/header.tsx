@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { Link, useLocation } from "wouter";
-import { Smartphone, Search, Menu, X } from "lucide-react";
+import { Smartphone, Search, Menu, X, Scale } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Badge } from "@/components/ui/badge";
+import { useCompare } from "@/hooks/use-compare";
 
 export function Header() {
   const [location, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { compareCount } = useCompare();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,14 +64,26 @@ export function Header() {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`font-medium transition-colors ${
+                className={`font-medium transition-colors relative ${
                   location === item.href || location.startsWith(item.href + "/")
                     ? "text-primary"
                     : "text-gray-700 hover:text-primary"
                 }`}
                 data-testid={`nav-${item.label.toLowerCase()}`}
               >
-                {item.label}
+                {item.label === "Compare" ? (
+                  <div className="flex items-center space-x-1">
+                    <Scale className="h-4 w-4" />
+                    <span>Compare</span>
+                    {compareCount > 0 && (
+                      <Badge variant="secondary" className="text-xs">
+                        {compareCount}
+                      </Badge>
+                    )}
+                  </div>
+                ) : (
+                  item.label
+                )}
               </Link>
             ))}
           </nav>

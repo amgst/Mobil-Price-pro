@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { HelmetProvider } from "react-helmet-async";
+import { CompareProvider } from "@/hooks/use-compare";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import Brands from "@/pages/brands";
@@ -31,8 +32,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <HelmetProvider>
         <TooltipProvider>
-          <Toaster />
-          <Router />
+          <CompareProvider>
+            <Toaster />
+            <Router />
+          </CompareProvider>
         </TooltipProvider>
       </HelmetProvider>
     </QueryClientProvider>

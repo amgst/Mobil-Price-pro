@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery } from "@tanstack/react-query";
+import { useCompare } from "@/hooks/use-compare";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
@@ -12,18 +13,25 @@ import { Search, X, Plus } from "lucide-react";
 import type { Mobile } from "@shared/schema";
 
 export default function Compare() {
-  const [location] = useLocation();
-  const [compareList, setCompareList] = useState<string[]>([]);
+  const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const { compareList, addToCompare, removeFromCompare, clearCompare } = useCompare();
 
-  // Parse compare list from URL
+  // Update URL when compare list changes
   useEffect(() => {
-    const params = new URLSearchParams(location.split('?')[1] || '');
-    const phones = params.get('phones');
-    if (phones) {
-      setCompareList(phones.split(',').filter(Boolean));
+    const currentParams = new URLSearchParams(location.split('?')[1] || '');
+    if (compareList.length > 0) {
+      currentParams.set('phones', compareList.join(','));
+      const newUrl = `/compare?${currentParams.toString()}`;
+      if (location !== newUrl) {
+        window.history.replaceState({}, '', newUrl);
+      }
+    } else {
+      if (location !== '/compare') {
+        window.history.replaceState({}, '', '/compare');
+      }
     }
-  }, [location]);
+  }, [compareList, location]);
 
   const { data: searchResults } = useQuery<Mobile[]>({
     queryKey: ["/api/mobiles", { search: searchQuery }],
@@ -35,7 +43,7 @@ export default function Compare() {
   });
 
   const compareMobiles = allMobiles?.filter(mobile => 
-    compareList.some(id => mobile.id === id || `${mobile.brand}-${mobile.slug}` === id)
+    compareList.includes(mobile.id)
   ) || [];
 
   const breadcrumbs = [
@@ -43,26 +51,9 @@ export default function Compare() {
     { label: "Compare", href: "/compare", isActive: true }
   ];
 
-  const addToCompare = (mobile: Mobile) => {
-    const newList = [...compareList, mobile.id].slice(0, 4); // Limit to 4 phones
-    setCompareList(newList);
-    updateURL(newList);
+  const handleAddToCompare = (mobile: Mobile) => {
+    addToCompare(mobile);
     setSearchQuery("");
-  };
-
-  const removeFromCompare = (mobileId: string) => {
-    const newList = compareList.filter(id => id !== mobileId);
-    setCompareList(newList);
-    updateURL(newList);
-  };
-
-  const updateURL = (list: string[]) => {
-    const params = new URLSearchParams();
-    if (list.length > 0) {
-      params.set('phones', list.join(','));
-    }
-    const newUrl = `/compare${list.length > 0 ? `?${params.toString()}` : ''}`;
-    window.history.pushState({}, '', newUrl);
   };
 
   const getCompareTitle = () => {
@@ -137,7 +128,7 @@ export default function Compare() {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => addToCompare(mobile)}
+                        onClick={() => handleAddToCompare(mobile)}
                         disabled={compareList.length >= 4 || compareList.includes(mobile.id)}
                         data-testid={`button-add-compare-${mobile.id}`}
                       >
@@ -283,10 +274,7 @@ export default function Compare() {
                 </div>
                 <div className="p-4 bg-gray-50 text-center">
                   <Button 
-                    onClick={() => {
-                      setCompareList([]);
-                      updateURL([]);
-                    }}
+                    onClick={clearCompare}
                     variant="outline"
                     data-testid="button-clear-comparison"
                   >

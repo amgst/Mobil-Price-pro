@@ -1,7 +1,8 @@
 import { Link } from "wouter";
-import { Plus } from "lucide-react";
+import { Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useCompare } from "@/hooks/use-compare";
 import type { Mobile } from "@shared/schema";
 
 interface MobileCardProps {
@@ -9,11 +10,13 @@ interface MobileCardProps {
 }
 
 export function MobileCard({ mobile }: MobileCardProps) {
+  const { addToCompare, isInCompare } = useCompare();
+  const inCompare = isInCompare(mobile.id);
+
   const handleAddToCompare = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
-    // Add to compare logic - could use context or local storage
-    console.log("Add to compare:", mobile.name);
+    addToCompare(mobile);
   };
 
   return (
@@ -67,12 +70,14 @@ export function MobileCard({ mobile }: MobileCardProps) {
               View Details
             </Button>
             <Button
-              variant="outline"
+              variant={inCompare ? "default" : "outline"}
               size="sm"
               onClick={handleAddToCompare}
+              disabled={inCompare}
               data-testid={`button-add-compare-${mobile.slug}`}
+              title={inCompare ? "Already in comparison" : "Add to comparison"}
             >
-              <Plus className="h-4 w-4" />
+              {inCompare ? <Check className="h-4 w-4" /> : <Plus className="h-4 w-4" />}
             </Button>
           </div>
         </div>
