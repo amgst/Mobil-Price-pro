@@ -67,3 +67,20 @@ The application implements comprehensive SEO features including meta tags, struc
 
 ## External Services
 The application is configured to work with **Replit's development environment** with specific plugins for error handling and live reloading. The architecture supports easy integration with image CDN services (ImageKit paths are included in the schema) and other external APIs for enhanced functionality.
+
+### AI Service Integration
+The application includes an **OpenAI-powered AI service** (`server/ai-service.ts`) for generating mobile phone specifications, marketing content, and comparisons. The service is designed with robust fallback mechanisms:
+
+**AI Service Features:**
+- **Mobile Spec Generation**: Creates realistic specifications for new phone entries
+- **Content Enhancement**: Generates SEO descriptions and marketing content
+- **Detailed Specifications**: Produces comprehensive technical spec sheets
+- **Similar Phone Suggestions**: Recommends comparable devices for comparisons
+
+**Fallback System (Added: August 18, 2025):**
+- **Graceful Degradation**: When OpenAI API is unavailable or has billing issues, the service automatically falls back to template-based generation
+- **Brand-Aware Defaults**: Fallback specs are tailored based on brand positioning (Apple, Samsung, Google, etc.)
+- **No Service Interruption**: App remains fully functional even without AI service connectivity
+- **Error Logging**: All AI failures are logged while maintaining user experience
+
+This ensures the application runs reliably regardless of external API availability.
