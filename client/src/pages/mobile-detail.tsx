@@ -4,6 +4,9 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { SEOHead } from "@/components/seo/seo-head";
+import { RichMetaTags } from "@/components/seo/meta-tags";
+import { generateProductSchema, generateBreadcrumbSchema, generateFAQSchema } from "@/components/seo/structured-data";
+import { TechnicalHighlights, PriceAnalysis, FrequentlyAskedQuestions, ComparisonSuggestions, ExpertReview } from "@/components/seo/rich-content";
 import { MobileHero } from "@/components/mobile/mobile-hero";
 import { SpecsTable } from "@/components/mobile/specs-table";
 import { ImageGallery } from "@/components/mobile/image-gallery";
@@ -70,13 +73,23 @@ export default function MobileDetail() {
     );
   }
 
+  // Generate comprehensive structured data
+  const productSchema = generateProductSchema(mobile);
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+  const faqSchema = generateFAQSchema(mobile);
+  
+  // Combine all structured data
+  const combinedSchema = [productSchema, breadcrumbSchema, faqSchema];
+
   return (
     <>
       <SEOHead 
         title={`${mobile.name} Price in Pakistan, Full Specifications & Review (2025)`}
-        description={`${mobile.name} price in Pakistan is ${mobile.price}. View complete specifications, features, camera details, battery life and expert review.`}
+        description={`${mobile.name} price in Pakistan is ${mobile.price}. Complete specifications: ${mobile.shortSpecs.ram} RAM, ${mobile.shortSpecs.storage} storage, ${mobile.shortSpecs.camera} camera. Expert review and comparison.`}
         canonical={`/${brandSlug}/${mobileSlug}`}
+        jsonLd={combinedSchema}
       />
+      <RichMetaTags mobile={mobile} page="mobile" />
       
       <div className="min-h-screen bg-gray-50">
         <Header />
@@ -86,11 +99,20 @@ export default function MobileDetail() {
           {/* Mobile Hero Section */}
           <MobileHero mobile={mobile} />
 
+          {/* Technical Highlights - Rich Content */}
+          <TechnicalHighlights mobile={mobile} />
+
+          {/* Price Analysis - Rich Content */}
+          <PriceAnalysis mobile={mobile} />
+
           {/* Image Gallery */}
           <section className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Gallery</h2>
             <ImageGallery images={mobile.carouselImages} alt={mobile.name} />
           </section>
+
+          {/* Expert Review - Rich Content */}
+          <ExpertReview mobile={mobile} />
 
           {/* Detailed Specifications */}
           <section id="detailed-specifications" className="mb-12">
@@ -124,6 +146,12 @@ export default function MobileDetail() {
               </div>
             </section>
           )}
+
+          {/* Comparison Suggestions - Rich Content */}
+          <ComparisonSuggestions mobile={mobile} relatedMobiles={relatedMobiles} />
+
+          {/* Frequently Asked Questions - Rich Content */}
+          <FrequentlyAskedQuestions mobile={mobile} />
 
           {/* Related Mobiles */}
           {relatedMobiles && relatedMobiles.length > 1 && (

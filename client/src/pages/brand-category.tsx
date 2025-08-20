@@ -4,6 +4,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { SEOHead } from "@/components/seo/seo-head";
+import { RichMetaTags } from "@/components/seo/meta-tags";
+import { generateCollectionPageSchema, generateBreadcrumbSchema, generateOrganizationSchema } from "@/components/seo/structured-data";
 import { MobileCard } from "@/components/mobile/mobile-card";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -31,13 +33,22 @@ export default function BrandCategory() {
     return <div>Brand not found</div>;
   }
 
+  // Generate rich structured data
+  const organizationSchema = generateOrganizationSchema();
+  const breadcrumbSchema = generateBreadcrumbSchema(breadcrumbs);
+  const collectionSchema = brand && mobiles ? generateCollectionPageSchema(brand, mobiles) : null;
+  
+  const combinedSchema = [organizationSchema, breadcrumbSchema, collectionSchema].filter(Boolean);
+
   return (
     <>
       <SEOHead 
-        title={`${brand?.name || brandSlug} Mobile Phones Price in Pakistan 2025 - Latest Models`}
-        description={`Find latest ${brand?.name || brandSlug} mobile phone prices in Pakistan. Compare specifications, features and reviews of all ${brand?.name || brandSlug} smartphones.`}
+        title={`${brand?.name || brandSlug} Mobile Phones Price in Pakistan 2025 - Latest Models & Specifications`}
+        description={`Latest ${brand?.name || brandSlug} mobile phone prices in Pakistan. Compare ${mobiles?.length || 0}+ models with detailed specifications, camera reviews, and performance analysis. Updated 2025.`}
         canonical={`/${brandSlug}`}
+        jsonLd={combinedSchema}
       />
+      <RichMetaTags brand={brand} page="brand" />
       
       <div className="min-h-screen bg-gray-50">
         <Header />
