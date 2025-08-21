@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import { ImageUtils } from "@/lib/image-utils";
+import { formatCompactCamera, formatCompactDisplay, formatCompactProcessor } from "@/lib/text-utils";
 import type { Mobile } from "@shared/schema";
 
 interface MobileCardProps {
@@ -63,17 +64,35 @@ export function MobileCard({ mobile }: MobileCardProps) {
 
           {/* Key Specs */}
           <div className="space-y-1 text-sm text-gray-600 mb-4">
-            <div className="flex justify-between">
+            {mobile.shortSpecs.display && (
+              <div className="flex justify-between items-center">
+                <span>Display:</span>
+                <span className="text-right text-xs font-medium" title={mobile.shortSpecs.display}>
+                  {formatCompactDisplay(mobile.shortSpecs.display)}
+                </span>
+              </div>
+            )}
+            {mobile.shortSpecs.processor && (
+              <div className="flex justify-between items-center">
+                <span>Processor:</span>
+                <span className="text-right text-xs font-medium" title={mobile.shortSpecs.processor}>
+                  {formatCompactProcessor(mobile.shortSpecs.processor)}
+                </span>
+              </div>
+            )}
+            <div className="flex justify-between items-center">
               <span>RAM:</span>
-              <span>{mobile.shortSpecs.ram}</span>
+              <span className="text-right font-medium">{mobile.shortSpecs.ram}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>Storage:</span>
-              <span>{mobile.shortSpecs.storage}</span>
+              <span className="text-right font-medium">{mobile.shortSpecs.storage}</span>
             </div>
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <span>Camera:</span>
-              <span>{mobile.shortSpecs.camera}</span>
+              <span className="text-right text-xs font-medium" title={mobile.shortSpecs.camera}>
+                {formatCompactCamera(mobile.shortSpecs.camera)}
+              </span>
             </div>
           </div>
 
