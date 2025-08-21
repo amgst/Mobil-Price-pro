@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import { ImageUtils } from "@/lib/image-utils";
+import { formatCompactCamera, formatCompactDisplay, formatCompactProcessor } from "@/lib/text-utils";
 import { 
   Heart, 
   Share2, 
@@ -14,7 +15,9 @@ import {
   Monitor,
   Palette,
   Upload,
-  Sparkles
+  Sparkles,
+  ChevronDown,
+  ChevronUp
 } from "lucide-react";
 import { PhotoUploadSearch } from "@/components/ai/photo-upload-search";
 import { CameraQualityAnalyzer } from "@/components/ai/camera-quality-analyzer";
@@ -32,6 +35,7 @@ export function MobileHero({ mobile }: MobileHeroProps) {
   const [showCameraAnalyzer, setShowCameraAnalyzer] = useState(false);
   const [showScreenAnalyzer, setShowScreenAnalyzer] = useState(false);
   const [showDesignFinder, setShowDesignFinder] = useState(false);
+  const [expandedSpecs, setExpandedSpecs] = useState<{ [key: string]: boolean }>({});
 
   const { addToCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(mobile.id);
@@ -55,6 +59,13 @@ export function MobileHero({ mobile }: MobileHeroProps) {
 
   const handleAddToCompare = () => {
     addToCompare(mobile);
+  };
+
+  const toggleSpecExpansion = (specKey: string) => {
+    setExpandedSpecs(prev => ({
+      ...prev,
+      [specKey]: !prev[specKey]
+    }));
   };
 
   return (
@@ -129,38 +140,100 @@ export function MobileHero({ mobile }: MobileHeroProps) {
               {/* Key Features */}
               <div className="space-y-4 mb-6">
                 {mobile.shortSpecs.display && (
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">Display</span>
-                    <span 
-                      className="font-medium"
-                      dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.display }}
-                    />
+                  <div className="py-2 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Display</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-right">
+                          {expandedSpecs.display ? (
+                            <span dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.display }} />
+                          ) : (
+                            formatCompactDisplay(mobile.shortSpecs.display)
+                          )}
+                        </span>
+                        <button
+                          onClick={() => toggleSpecExpansion('display')}
+                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                          title={expandedSpecs.display ? "Show less" : "Show more"}
+                        >
+                          {expandedSpecs.display ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
+                
                 {mobile.shortSpecs.processor && (
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">Processor</span>
-                    <span className="font-medium">{mobile.shortSpecs.processor}</span>
+                  <div className="py-2 border-b border-gray-100 dark:border-gray-700">
+                    <div className="flex items-center justify-between">
+                      <span className="text-gray-600 dark:text-gray-300">Processor</span>
+                      <div className="flex items-center gap-2">
+                        <span className="font-medium text-right">
+                          {expandedSpecs.processor ? (
+                            mobile.shortSpecs.processor
+                          ) : (
+                            formatCompactProcessor(mobile.shortSpecs.processor)
+                          )}
+                        </span>
+                        <button
+                          onClick={() => toggleSpecExpansion('processor')}
+                          className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                          title={expandedSpecs.processor ? "Show less" : "Show more"}
+                        >
+                          {expandedSpecs.processor ? (
+                            <ChevronUp className="h-4 w-4" />
+                          ) : (
+                            <ChevronDown className="h-4 w-4" />
+                          )}
+                        </button>
+                      </div>
+                    </div>
                   </div>
                 )}
-                <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">RAM</span>
+                
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-300">RAM</span>
                   <span className="font-medium">{mobile.shortSpecs.ram}</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Storage</span>
+                
+                <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                  <span className="text-gray-600 dark:text-gray-300">Storage</span>
                   <span className="font-medium">{mobile.shortSpecs.storage}</span>
                 </div>
-                <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                  <span className="text-gray-600">Main Camera</span>
-                  <span 
-                    className="font-medium"
-                    dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.camera }}
-                  />
+                
+                <div className="py-2 border-b border-gray-100 dark:border-gray-700">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-600 dark:text-gray-300">Main Camera</span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-medium text-right">
+                        {expandedSpecs.camera ? (
+                          <span dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.camera }} />
+                        ) : (
+                          formatCompactCamera(mobile.shortSpecs.camera)
+                        )}
+                      </span>
+                      <button
+                        onClick={() => toggleSpecExpansion('camera')}
+                        className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
+                        title={expandedSpecs.camera ? "Show less" : "Show more"}
+                      >
+                        {expandedSpecs.camera ? (
+                          <ChevronUp className="h-4 w-4" />
+                        ) : (
+                          <ChevronDown className="h-4 w-4" />
+                        )}
+                      </button>
+                    </div>
+                  </div>
                 </div>
+                
                 {mobile.shortSpecs.battery && (
-                  <div className="flex items-center justify-between py-2 border-b border-gray-100">
-                    <span className="text-gray-600">Battery</span>
+                  <div className="flex items-center justify-between py-2 border-b border-gray-100 dark:border-gray-700">
+                    <span className="text-gray-600 dark:text-gray-300">Battery</span>
                     <span className="font-medium">{mobile.shortSpecs.battery}</span>
                   </div>
                 )}
