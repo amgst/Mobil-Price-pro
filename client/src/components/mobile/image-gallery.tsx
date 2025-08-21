@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { SafeImage } from "@/components/ui/safe-image";
+import { ImageUtils } from "@/lib/image-utils";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface ImageGalleryProps {
@@ -24,11 +26,14 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
       <CardContent className="p-6">
         <div className="relative">
           {/* Main Image */}
-          <div className="aspect-video bg-gray-50 rounded-lg mb-4 relative overflow-hidden">
-            <img
+          <div className="aspect-video bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 rounded-lg mb-4 relative overflow-hidden shadow-inner">
+            <SafeImage
               src={images[currentImage]}
               alt={`${alt} image ${currentImage + 1}`}
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain rounded-lg"
+              quality="high"
+              placeholder={ImageUtils.generatePlaceholder(images[currentImage])}
+              sizes="(max-width: 768px) 100vw, (max-width: 1024px) 80vw, 60vw"
               data-testid={`gallery-main-image-${currentImage}`}
             />
             
@@ -78,10 +83,13 @@ export function ImageGallery({ images, alt }: ImageGalleryProps) {
                   }`}
                   data-testid={`gallery-thumbnail-${index}`}
                 >
-                  <img
+                  <SafeImage
                     src={image}
                     alt={`${alt} thumbnail ${index + 1}`}
                     className="w-full h-full object-contain rounded"
+                    quality="low"
+                    loading="lazy"
+                    showFallback={false}
                   />
                 </button>
               ))}

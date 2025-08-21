@@ -287,7 +287,6 @@ export class DataTransformer {
   }
 
   private static generateImageUrl(manufacturer: string, model: string): string {
-    // Generate more reliable GSMArena image URL patterns
     const cleanModel = model.toLowerCase()
       .replace(/\([^)]*\)/g, '') // Remove content in parentheses
       .replace(/[^a-z0-9\s]/g, '') // Remove special characters
@@ -296,71 +295,114 @@ export class DataTransformer {
       .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
     const cleanManufacturer = manufacturer.toLowerCase();
     
-    // Generate fallback image URLs for better compatibility
-    const brandImageMap: Record<string, string> = {
-      'apple': 'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg',
-      'samsung': 'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g.jpg',
-      'google': 'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8-pro.jpg',
-      'xiaomi': 'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-ultra.jpg',
-      'oneplus': 'https://fdn2.gsmarena.com/vv/bigpic/oneplus-12.jpg',
-      'oppo': 'https://fdn2.gsmarena.com/vv/bigpic/oppo-find-x7-ultra.jpg',
-      'vivo': 'https://fdn2.gsmarena.com/vv/bigpic/vivo-x100-pro.jpg'
+    // High-quality flagship images for each brand (latest models)
+    const brandFlagshipImages: Record<string, string[]> = {
+      'apple': [
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-plus.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15.jpg'
+      ],
+      'samsung': [
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-plus-5g.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-5g.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold5.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-flip5.jpg'
+      ],
+      'google': [
+        'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8a.jpg'
+      ],
+      'xiaomi': [
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-ultra.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-13t-pro.jpg'
+      ],
+      'oneplus': [
+        'https://fdn2.gsmarena.com/vv/bigpic/oneplus-12.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oneplus-11.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oneplus-open.jpg'
+      ],
+      'oppo': [
+        'https://fdn2.gsmarena.com/vv/bigpic/oppo-find-x7-ultra.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oppo-reno11-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oppo-a79-5g.jpg'
+      ],
+      'vivo': [
+        'https://fdn2.gsmarena.com/vv/bigpic/vivo-x100-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/vivo-v30-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/vivo-y100.jpg'
+      ]
     };
     
-    // Try the generated URL first, then fallback to known working images
-    const primaryUrl = `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-${cleanModel}.jpg`;
-    
-    // If we have a fallback for this brand, return it (known working images)
-    if (brandImageMap[cleanManufacturer]) {
-      return brandImageMap[cleanManufacturer];
+    // Get random high-quality image from brand's flagship collection
+    const brandImages = brandFlagshipImages[cleanManufacturer];
+    if (brandImages && brandImages.length > 0) {
+      const randomIndex = Math.floor(Math.random() * brandImages.length);
+      return brandImages[randomIndex];
     }
     
-    // Return the generated URL as fallback
-    return primaryUrl;
+    // Fallback to generated URL
+    return `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-${cleanModel}.jpg`;
   }
 
   private static generateCarouselImages(manufacturer: string, model: string): string[] {
-    // Use reliable fallback images for carousel
     const cleanManufacturer = manufacturer.toLowerCase();
     
-    // Brand-specific reliable image sets
+    // Rich carousel image sets with multiple angles and sizes
     const brandCarouselMap: Record<string, string[]> = {
       'apple': [
         'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro-max.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/apple-iphone-15-plus.jpg',
         'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-max-1.jpg',
         'https://fdn2.gsmarena.com/vv/pics/apple/apple-iphone-15-pro-max-2.jpg'
       ],
       'samsung': [
         'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-ultra-5g.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-s24-plus-5g.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/samsung-galaxy-z-fold5.jpg',
         'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-1.jpg',
-        'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-2.jpg'
+        'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-2.jpg',
+        'https://fdn2.gsmarena.com/vv/pics/samsung/samsung-galaxy-s24-ultra-3.jpg'
       ],
       'google': [
         'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/google-pixel-8.jpg',
         'https://fdn2.gsmarena.com/vv/pics/google/google-pixel-8-pro-1.jpg',
         'https://fdn2.gsmarena.com/vv/pics/google/google-pixel-8-pro-2.jpg'
       ],
       'xiaomi': [
         'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-ultra.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/xiaomi-14.jpg',
         'https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-14-ultra-1.jpg',
         'https://fdn2.gsmarena.com/vv/pics/xiaomi/xiaomi-14-ultra-2.jpg'
       ],
       'oneplus': [
         'https://fdn2.gsmarena.com/vv/bigpic/oneplus-12.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oneplus-11.jpg',
         'https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-12-1.jpg',
         'https://fdn2.gsmarena.com/vv/pics/oneplus/oneplus-12-2.jpg'
       ],
       'oppo': [
-        'https://fdn2.gsmarena.com/vv/bigpic/oppo-find-x7-ultra.jpg'
+        'https://fdn2.gsmarena.com/vv/bigpic/oppo-find-x7-ultra.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/oppo-reno11-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/pics/oppo/oppo-find-x7-ultra-1.jpg'
       ],
       'vivo': [
-        'https://fdn2.gsmarena.com/vv/bigpic/vivo-x100-pro.jpg'
+        'https://fdn2.gsmarena.com/vv/bigpic/vivo-x100-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/bigpic/vivo-v30-pro.jpg',
+        'https://fdn2.gsmarena.com/vv/pics/vivo/vivo-x100-pro-1.jpg'
       ]
     };
     
-    // Return brand-specific carousel or single image
+    // Return brand-specific carousel images
     return brandCarouselMap[cleanManufacturer] || [
-      `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-generic-phone.jpg`
+      DataTransformer.generateImageUrl(manufacturer, model)
     ];
   }
 

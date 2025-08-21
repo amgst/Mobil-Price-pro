@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
+import { ImageUtils } from "@/lib/image-utils";
 import type { Mobile } from "@shared/schema";
 
 interface MobileHeroProps {
@@ -14,6 +15,13 @@ export function MobileHero({ mobile }: MobileHeroProps) {
   const [selectedImage, setSelectedImage] = useState(0);
   const { addToCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(mobile.id);
+
+  // Create comprehensive image sources for hero display
+  const allImages = ImageUtils.createImageSources(
+    mobile.imageUrl,
+    mobile.carouselImages || [],
+    mobile.brand
+  );
 
   const scrollToSpecs = () => {
     const specsSection = document.getElementById('detailed-specifications');
@@ -36,24 +44,34 @@ export function MobileHero({ mobile }: MobileHeroProps) {
           <div className="lg:flex">
             {/* Image Gallery */}
             <div className="lg:w-1/2 p-6">
-              <div className="aspect-square bg-gray-50 rounded-lg mb-4">
+              <div className="aspect-square bg-gradient-to-br from-gray-50 via-white to-gray-100 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 rounded-lg mb-4 relative overflow-hidden shadow-inner">
                 <SafeImage
-                  src={mobile.carouselImages[selectedImage] || mobile.imageUrl}
+                  src={allImages}
                   alt={mobile.name}
                   className="w-full h-full object-contain rounded-lg"
+                  quality="high"
+                  placeholder={ImageUtils.generatePlaceholder(allImages[0] || mobile.imageUrl)}
+                  sizes="(max-width: 1024px) 100vw, 50vw"
                   data-testid="mobile-hero-image"
                 />
+                
+                {/* Image quality indicator */}
+                <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-full backdrop-blur-sm">
+                  High Quality
+                </div>
               </div>
-              {mobile.carouselImages.length > 1 && (
+
+              {/* Enhanced thumbnail gallery */}
+              {allImages.length > 1 && (
                 <div className="grid grid-cols-4 gap-2">
-                  {mobile.carouselImages.map((image, index) => (
+                  {allImages.slice(0, 8).map((image, index) => (
                     <button
                       key={index}
                       onClick={() => setSelectedImage(index)}
-                      className={`aspect-square object-cover rounded border transition-all ${
+                      className={`aspect-square rounded border-2 transition-all duration-200 hover:shadow-md ${
                         selectedImage === index
-                          ? "border-primary ring-2 ring-primary/20"
-                          : "border-gray-200 hover:border-gray-300"
+                          ? "border-primary ring-2 ring-primary/30 shadow-lg"
+                          : "border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500"
                       }`}
                       data-testid={`mobile-hero-thumbnail-${index}`}
                     >
@@ -61,10 +79,19 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                         src={image}
                         alt={`${mobile.name} view ${index + 1}`}
                         className="w-full h-full object-contain rounded"
+                        quality="low"
                         showFallback={false}
+                        loading="lazy"
                       />
                     </button>
                   ))}
+                  
+                  {/* View all images indicator */}
+                  {allImages.length > 8 && (
+                    <div className="aspect-square border-2 border-gray-200 dark:border-gray-600 rounded flex items-center justify-center text-xs text-gray-500 dark:text-gray-400 bg-gray-50 dark:bg-gray-800">
+                      +{allImages.length - 8}
+                    </div>
+                  )}
                 </div>
               )}
             </div>

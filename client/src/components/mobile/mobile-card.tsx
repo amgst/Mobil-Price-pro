@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
+import { ImageUtils } from "@/lib/image-utils";
 import type { Mobile } from "@shared/schema";
 
 interface MobileCardProps {
@@ -14,6 +15,13 @@ export function MobileCard({ mobile }: MobileCardProps) {
   const { addToCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(mobile.id);
 
+  // Create comprehensive image sources with fallbacks
+  const imageSources = ImageUtils.createImageSources(
+    mobile.imageUrl, 
+    mobile.carouselImages || [], 
+    mobile.brand
+  );
+
   const handleAddToCompare = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -23,13 +31,21 @@ export function MobileCard({ mobile }: MobileCardProps) {
   return (
     <Link href={`/${mobile.brand}/${mobile.slug}`} data-testid={`mobile-card-${mobile.slug}`}>
       <div className="bg-white rounded-lg border hover:shadow-lg transition-shadow overflow-hidden cursor-pointer">
-        <div className="aspect-square bg-gray-50 p-4">
+        <div className="aspect-square bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-800 dark:to-gray-900 p-4 relative overflow-hidden">
           <SafeImage
-            src={mobile.imageUrl}
+            src={imageSources}
             alt={mobile.name}
-            className="w-full h-full object-contain"
+            className="w-full h-full object-contain transition-transform duration-300 hover:scale-105"
             loading="lazy"
+            quality="medium"
+            placeholder={ImageUtils.generatePlaceholder(mobile.imageUrl)}
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
           />
+          
+          {/* Price badge overlay */}
+          <div className="absolute top-2 right-2 bg-green-500 text-white text-xs font-semibold px-2 py-1 rounded-full shadow-lg">
+            PKR
+          </div>
         </div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
