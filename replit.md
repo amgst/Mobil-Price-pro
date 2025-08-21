@@ -143,59 +143,15 @@ The application now features a **professional-grade image optimization system** 
 
 The system ensures reliable image display across all devices while maintaining Pakistani market focus with PKR pricing integration.
 
-### AR/VR Integration System (Added: August 21, 2025)
-The application now features a **cutting-edge AR/VR integration system** providing immersive mobile phone experiences:
+### AR/VR Integration System (Removed: August 21, 2025)
+The AR/VR integration system has been removed from the application as it was not providing the expected user experience. The system was too complex and unreliable for practical use.
 
-**Core AR/VR Service (`ar-vr-service.ts`):**
-- **Camera Access Management**: Seamless WebRTC camera initialization with optimal AR settings
-- **3D Rendering Engine**: Real-time phone model rendering with brand-specific materials and textures
-- **Device Dimensions Database**: Accurate physical dimensions for all supported mobile brands
-- **Session Management**: Handles multiple AR modes with persistent state management
-- **Hand Size Calibration**: Adjustable scaling for different hand sizes (small/medium/large)
+**Removed Components:**
+- All AR/VR service files and components
+- Virtual Phone Try-On functionality
+- AR Phone Comparison features
+- 360° Phone Exploration
+- AR/VR Hub interface
+- All related UI buttons and integrations
 
-**AR/VR Features:**
-
-1. **Virtual Phone Try-On (`virtual-tryon.tsx`)**:
-   - Live camera feed with real-time phone overlay
-   - Interactive positioning with tap-to-move functionality
-   - Hand size adjustment for accurate scale comparison
-   - Device specifications display with live dimensions
-   - Quality indicators and size measurements
-
-2. **AR Phone Comparison (`ar-comparison.tsx`)**:
-   - Multi-device AR rendering (2-4 phones simultaneously)
-   - Side-by-side and overlay comparison modes
-   - Interactive device positioning and selection
-   - Real-time size and spec comparisons in AR space
-   - Intelligent arrangement algorithms
-
-3. **360° Phone Exploration (`phone-360-view.tsx`)**:
-   - Interactive 3D phone models with realistic materials
-   - Drag-to-rotate and auto-rotation modes
-   - Brand-specific color schemes and textures
-   - Zoom controls (0.5x to 3.0x magnification)
-   - Real-time specification overlays
-   - Camera and detail rendering
-
-**AR/VR Hub Interface (`ar-vr-hub.tsx`)**:
-- Unified entry point for all AR/VR experiences
-- System requirements checking and camera permissions
-- Feature comparison matrix showing capabilities
-- Responsive design with mobile optimization
-- Error handling and fallback notifications
-
-**Integration Points:**
-- **Mobile Hero Component**: AR/VR experience button on individual phone pages
-- **Compare Page**: Multi-phone AR comparison when 2+ phones selected
-- **Cross-Component State**: Seamless data flow between AR features
-- **Responsive Design**: Optimized for desktop and mobile AR experiences
-
-**Technical Features:**
-- WebGL-based 3D rendering with performance optimization
-- Progressive canvas rendering with 60fps targeting
-- Touch and mouse interaction handling
-- Real-time camera feed processing
-- Brand-specific fallback systems
-- Cross-browser compatibility checks
-
-This AR/VR system positions the mobile comparison website as a leader in next-generation e-commerce visualization technology.
+The application now focuses on core mobile comparison functionality with reliable image optimization and authentic mobile data from GSMArena via RapidAPI.

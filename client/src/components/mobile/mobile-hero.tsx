@@ -5,8 +5,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import { ImageUtils } from "@/lib/image-utils";
-import { ARVRHub } from "@/components/ar-vr/ar-vr-hub";
-import { Zap } from "lucide-react";
+
+
 import type { Mobile } from "@shared/schema";
 
 interface MobileHeroProps {
@@ -15,7 +15,7 @@ interface MobileHeroProps {
 
 export function MobileHero({ mobile }: MobileHeroProps) {
   const [selectedImage, setSelectedImage] = useState(0);
-  const [showARVR, setShowARVR] = useState(false);
+
   const { addToCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(mobile.id);
 
@@ -170,21 +170,7 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                 </Button>
               </div>
 
-              {/* AR/VR Experience Button */}
-              <div className="mt-4">
-                <Button
-                  onClick={() => setShowARVR(true)}
-                  size="lg"
-                  className="w-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
-                  data-testid="ar-vr-experience"
-                >
-                  <Zap className="h-4 w-4 mr-2" />
-                  AR/VR Experience
-                </Button>
-                <p className="text-xs text-muted-foreground text-center mt-1">
-                  Virtual try-on • 3D exploration • AR comparison
-                </p>
-              </div>
+
 
               {/* Release Date */}
               <div className="mt-6 text-sm text-gray-600">
@@ -195,13 +181,7 @@ export function MobileHero({ mobile }: MobileHeroProps) {
         </CardContent>
       </Card>
 
-      {/* AR/VR Hub Modal */}
-      {showARVR && (
-        <ARVRHub
-          mobile={mobile}
-          onClose={() => setShowARVR(false)}
-        />
-      )}
+
     </section>
   );
 }
