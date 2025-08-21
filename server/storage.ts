@@ -1,5 +1,5 @@
 import { type User, type InsertUser, type Brand, type InsertBrand, type Mobile, type InsertMobile, users, brands, mobiles } from "@shared/schema";
-import { eq, like, or, and } from "drizzle-orm";
+import { eq, like, or, and, sql } from "drizzle-orm";
 import { db } from "./db";
 
 export interface IStorage {
@@ -239,7 +239,23 @@ export class DatabaseStorage implements IStorage {
 
   // Brand operations
   async getAllBrands(): Promise<Brand[]> {
-    return await db.select().from(brands);
+    // Get brands with dynamically calculated phone counts
+    const result = await db
+      .select({
+        id: brands.id,
+        name: brands.name,
+        slug: brands.slug,
+        logo: brands.logo,
+        description: brands.description,
+        createdAt: brands.createdAt,
+        phoneCount: sql<string>`CAST(COUNT(${mobiles.id}) AS TEXT)`.as('phoneCount')
+      })
+      .from(brands)
+      .leftJoin(mobiles, eq(brands.slug, mobiles.brand))
+      .groupBy(brands.id, brands.name, brands.slug, brands.logo, brands.description, brands.createdAt)
+      .orderBy(brands.name);
+    
+    return result;
   }
 
   async getBrandBySlug(slug: string): Promise<Brand | undefined> {
@@ -303,12 +319,12 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMobile(mobile: InsertMobile): Promise<Mobile> {
-    const [newMobile] = await db.insert(mobiles).values([mobile]).returning();
+    const [newMobile] = await db.insert(mobiles).values(mobile).returning();
     return newMobile;
   }
 
   async createBrand(brand: InsertBrand): Promise<Brand> {
-    const [newBrand] = await db.insert(brands).values([brand]).returning();
+    const [newBrand] = await db.insert(brands).values(brand).returning();
     return newBrand;
   }
 
