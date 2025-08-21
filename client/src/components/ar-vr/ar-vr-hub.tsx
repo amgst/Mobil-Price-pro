@@ -13,7 +13,7 @@ import {
   Zap,
   Info
 } from "lucide-react";
-import { VirtualTryOn } from "./virtual-tryon";
+import { SimpleVirtualTryOn } from "./simple-virtual-tryon";
 import { ARComparison } from "./ar-comparison";
 import { Phone360View } from "./phone-360-view";
 import { arvrService } from "@/lib/ar-vr-service";
@@ -86,7 +86,7 @@ export function ARVRHub({ mobile, mobiles = [], onClose }: ARVRHubProps) {
     switch (currentMode) {
       case 'try-on':
         return mobile ? (
-          <VirtualTryOn 
+          <SimpleVirtualTryOn 
             mobile={mobile} 
             onClose={() => setCurrentMode('hub')} 
           />
