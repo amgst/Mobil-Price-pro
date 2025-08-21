@@ -14,6 +14,11 @@ import Search from "@/pages/search";
 import Compare from "@/pages/compare";
 import Admin from "@/pages/admin";
 import AdminImport from "@/pages/AdminImport";
+import Reviews from "@/pages/reviews";
+import Guide from "@/pages/guide";
+import Contact from "@/pages/contact";
+import Privacy from "@/pages/privacy";
+import Terms from "@/pages/terms";
 
 function Router() {
   return (
@@ -22,6 +27,11 @@ function Router() {
       <Route path="/brands" component={Brands} />
       <Route path="/search" component={Search} />
       <Route path="/compare" component={Compare} />
+      <Route path="/reviews" component={Reviews} />
+      <Route path="/guide" component={Guide} />
+      <Route path="/contact" component={Contact} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/import" component={AdminImport} />
       <Route path="/:brand" component={BrandCategory} />
