@@ -34,7 +34,7 @@ export function AdminImport() {
   });
 
   // Import mutations
-  const importLatestMutation = useMutation({
+  const importLatestMutation = useMutation<ImportResult, Error, number>({
     mutationFn: (limit: number) => 
       apiRequest(`/api/admin/import/latest?limit=${limit}`, { method: 'POST' }),
     onSuccess: () => {
@@ -43,7 +43,7 @@ export function AdminImport() {
     }
   });
 
-  const importBrandsMutation = useMutation({
+  const importBrandsMutation = useMutation<ImportResult, Error, void>({
     mutationFn: () => 
       apiRequest('/api/admin/import/brands', { method: 'POST' }),
     onSuccess: () => {
@@ -52,7 +52,7 @@ export function AdminImport() {
     }
   });
 
-  const importPopularMutation = useMutation({
+  const importPopularMutation = useMutation<ImportResult, Error, void>({
     mutationFn: () => 
       apiRequest('/api/admin/import/popular', { method: 'POST' }),
     onSuccess: () => {
@@ -61,7 +61,7 @@ export function AdminImport() {
     }
   });
 
-  const importBrandMutation = useMutation({
+  const importBrandMutation = useMutation<ImportResult, Error, { brand: string; limit: number }>({
     mutationFn: ({ brand, limit }: { brand: string; limit: number }) => 
       apiRequest(`/api/admin/import/brand/${encodeURIComponent(brand)}?limit=${limit}`, { method: 'POST' }),
     onSuccess: () => {
@@ -70,7 +70,7 @@ export function AdminImport() {
     }
   });
 
-  const searchImportMutation = useMutation({
+  const searchImportMutation = useMutation<ImportResult, Error, { query: string; limit: number }>({
     mutationFn: ({ query, limit }: { query: string; limit: number }) => 
       apiRequest('/api/admin/import/search', { 
         method: 'POST',
@@ -94,23 +94,24 @@ export function AdminImport() {
     }
 
     if (result) {
+      const errors = result.errors || [];
       return (
-        <Alert className={result.errors.length > 0 ? "border-yellow-500" : "border-green-500"}>
+        <Alert className={errors.length > 0 ? "border-yellow-500" : "border-green-500"}>
           <AlertDescription>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">{result.success} imported</Badge>
-                {result.errors.length > 0 && (
-                  <Badge variant="destructive">{result.errors.length} errors</Badge>
+                <Badge variant="secondary">{result.success || 0} imported</Badge>
+                {errors.length > 0 && (
+                  <Badge variant="destructive">{errors.length} errors</Badge>
                 )}
               </div>
-              {result.errors.length > 0 && (
+              {errors.length > 0 && (
                 <div className="text-sm text-red-600 max-h-32 overflow-y-auto">
-                  {result.errors.slice(0, 3).map((error, index) => (
+                  {errors.slice(0, 3).map((error, index) => (
                     <div key={index}>• {error}</div>
                   ))}
-                  {result.errors.length > 3 && (
-                    <div>... and {result.errors.length - 3} more errors</div>
+                  {errors.length > 3 && (
+                    <div>... and {errors.length - 3} more errors</div>
                   )}
                 </div>
               )}
@@ -313,7 +314,7 @@ export function AdminImport() {
               <Input
                 id="brandLimit"
                 type="number"
-                value="20"
+                defaultValue="20"
                 min="1"
                 max="50"
               />
