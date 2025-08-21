@@ -122,6 +122,86 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Data Import Routes
+  app.post("/api/admin/import/brands", async (req, res) => {
+    try {
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const results = await importService.importBrands();
+      res.json(results);
+    } catch (error) {
+      console.error("Brand import failed:", error);
+      res.status(500).json({ message: "Failed to import brands", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.post("/api/admin/import/latest", async (req, res) => {
+    try {
+      const limit = parseInt(req.query.limit as string) || 50;
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const results = await importService.importLatestMobiles(limit);
+      res.json(results);
+    } catch (error) {
+      console.error("Latest mobiles import failed:", error);
+      res.status(500).json({ message: "Failed to import latest mobiles", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.post("/api/admin/import/brand/:brandName", async (req, res) => {
+    try {
+      const brandName = req.params.brandName;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const results = await importService.importMobilesByBrand(brandName, limit);
+      res.json(results);
+    } catch (error) {
+      console.error(`Brand ${req.params.brandName} import failed:`, error);
+      res.status(500).json({ message: `Failed to import mobiles for brand ${req.params.brandName}`, error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.post("/api/admin/import/popular", async (req, res) => {
+    try {
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const results = await importService.importPopularBrands();
+      res.json(results);
+    } catch (error) {
+      console.error("Popular brands import failed:", error);
+      res.status(500).json({ message: "Failed to import popular brands", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.post("/api/admin/import/search", async (req, res) => {
+    try {
+      const { query, limit = 10 } = req.body;
+      if (!query) {
+        return res.status(400).json({ message: "Query parameter is required" });
+      }
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const results = await importService.searchAndImportMobiles(query, limit);
+      res.json(results);
+    } catch (error) {
+      console.error("Search import failed:", error);
+      res.status(500).json({ message: "Failed to import searched mobiles", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
+  app.get("/api/admin/import/status", async (req, res) => {
+    try {
+      const { ImportService } = await import("./data-import/import-service");
+      const importService = new ImportService();
+      const status = await importService.getImportStatus();
+      res.json(status);
+    } catch (error) {
+      console.error("Import status failed:", error);
+      res.status(500).json({ message: "Failed to get import status", error: error instanceof Error ? error.message : "Unknown error" });
+    }
+  });
+
   app.put("/api/admin/mobiles/:id", async (req, res) => {
     try {
       const mobileData = insertMobileSchema.partial().parse(req.body);

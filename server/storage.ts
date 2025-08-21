@@ -247,10 +247,7 @@ export class DatabaseStorage implements IStorage {
     return brand;
   }
 
-  async createBrand(brand: InsertBrand): Promise<Brand> {
-    const [newBrand] = await db.insert(brands).values(brand).returning();
-    return newBrand;
-  }
+
 
   async updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand> {
     const [updatedBrand] = await db
@@ -306,8 +303,13 @@ export class DatabaseStorage implements IStorage {
   }
 
   async createMobile(mobile: InsertMobile): Promise<Mobile> {
-    const [newMobile] = await db.insert(mobiles).values(mobile).returning();
+    const [newMobile] = await db.insert(mobiles).values([mobile]).returning();
     return newMobile;
+  }
+
+  async createBrand(brand: InsertBrand): Promise<Brand> {
+    const [newBrand] = await db.insert(brands).values([brand]).returning();
+    return newBrand;
   }
 
   async updateMobile(id: string, mobile: Partial<InsertMobile>): Promise<Mobile> {

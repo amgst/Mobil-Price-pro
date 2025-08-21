@@ -13,6 +13,7 @@ import MobileDetail from "@/pages/mobile-detail";
 import Search from "@/pages/search";
 import Compare from "@/pages/compare";
 import Admin from "@/pages/admin";
+import AdminImport from "@/pages/AdminImport";
 
 function Router() {
   return (
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/search" component={Search} />
       <Route path="/compare" component={Compare} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/import" component={AdminImport} />
       <Route path="/:brand" component={BrandCategory} />
       <Route path="/:brand/:model" component={MobileDetail} />
       <Route component={NotFound} />
