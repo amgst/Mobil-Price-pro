@@ -83,6 +83,19 @@ export class DataTransformer {
       .replace(/^-|-$/g, '');
   }
 
+  private static cleanHTMLTags(text: string): string {
+    if (!text) return text;
+    return text
+      .replace(/<br\s*\/?>/gi, ' ')
+      .replace(/<sup>/gi, '')
+      .replace(/<\/sup>/gi, '')
+      .replace(/<sub>/gi, '')
+      .replace(/<\/sub>/gi, '')
+      .replace(/<\/?[^>]+(>|$)/g, "")
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   private static getBrandLogo(brandName: string): string {
     const logoMap: Record<string, string> = {
       'Apple': '🍎',
@@ -147,10 +160,10 @@ export class DataTransformer {
     return {
       ram: ram || 'Unknown',
       storage: storage || 'Unknown',
-      camera: rapidApiPhone.mainCameraSpecs || 'Unknown',
-      battery: rapidApiPhone.battery,
-      display: rapidApiPhone.displaySize,
-      processor: rapidApiPhone.chipset
+      camera: rapidApiPhone.mainCameraSpecs ? DataTransformer.cleanHTMLTags(rapidApiPhone.mainCameraSpecs) : 'Unknown',
+      battery: rapidApiPhone.battery ? DataTransformer.cleanHTMLTags(rapidApiPhone.battery) : 'Unknown',
+      display: rapidApiPhone.displaySize ? DataTransformer.cleanHTMLTags(rapidApiPhone.displaySize) : 'Unknown',
+      processor: rapidApiPhone.chipset ? DataTransformer.cleanHTMLTags(rapidApiPhone.chipset) : (rapidApiPhone.cpu ? DataTransformer.cleanHTMLTags(rapidApiPhone.cpu) : 'Unknown')
     };
   }
 
@@ -165,9 +178,9 @@ export class DataTransformer {
       specs.push({
         category: 'Display',
         specs: [
-          { feature: 'Screen Size', value: rapidApiPhone.displaySize || 'Unknown' },
-          { feature: 'Resolution', value: rapidApiPhone.displayResolution || 'Unknown' },
-          { feature: 'Display Type', value: rapidApiPhone.displayType || 'Unknown' }
+          { feature: 'Screen Size', value: rapidApiPhone.displaySize ? DataTransformer.cleanHTMLTags(rapidApiPhone.displaySize) : 'Unknown' },
+          { feature: 'Resolution', value: rapidApiPhone.displayResolution ? DataTransformer.cleanHTMLTags(rapidApiPhone.displayResolution) : 'Unknown' },
+          { feature: 'Display Type', value: rapidApiPhone.displayType ? DataTransformer.cleanHTMLTags(rapidApiPhone.displayType) : 'Unknown' }
         ].filter(spec => spec.value !== 'Unknown')
       });
     }
@@ -177,10 +190,10 @@ export class DataTransformer {
       specs.push({
         category: 'Camera',
         specs: [
-          { feature: 'Main Camera', value: rapidApiPhone.mainCameraSpecs || 'Unknown' },
-          { feature: 'Front Camera', value: rapidApiPhone.selfieCameraSpecs || 'Unknown' },
-          { feature: 'Main Features', value: rapidApiPhone.mainCameraFeatures || 'Unknown' },
-          { feature: 'Video Recording', value: rapidApiPhone.mainVideoSpecs || 'Unknown' }
+          { feature: 'Main Camera', value: rapidApiPhone.mainCameraSpecs ? DataTransformer.cleanHTMLTags(rapidApiPhone.mainCameraSpecs) : 'Unknown' },
+          { feature: 'Front Camera', value: rapidApiPhone.selfieCameraSpecs ? DataTransformer.cleanHTMLTags(rapidApiPhone.selfieCameraSpecs) : 'Unknown' },
+          { feature: 'Main Features', value: rapidApiPhone.mainCameraFeatures ? DataTransformer.cleanHTMLTags(rapidApiPhone.mainCameraFeatures) : 'Unknown' },
+          { feature: 'Video Recording', value: rapidApiPhone.mainVideoSpecs ? DataTransformer.cleanHTMLTags(rapidApiPhone.mainVideoSpecs) : 'Unknown' }
         ].filter(spec => spec.value !== 'Unknown')
       });
     }
@@ -190,9 +203,9 @@ export class DataTransformer {
       specs.push({
         category: 'Performance',
         specs: [
-          { feature: 'Chipset', value: rapidApiPhone.chipset || 'Unknown' },
-          { feature: 'CPU', value: rapidApiPhone.cpu || 'Unknown' },
-          { feature: 'GPU', value: rapidApiPhone.gpu || 'Unknown' }
+          { feature: 'Chipset', value: rapidApiPhone.chipset ? DataTransformer.cleanHTMLTags(rapidApiPhone.chipset) : 'Unknown' },
+          { feature: 'CPU', value: rapidApiPhone.cpu ? DataTransformer.cleanHTMLTags(rapidApiPhone.cpu) : 'Unknown' },
+          { feature: 'GPU', value: rapidApiPhone.gpu ? DataTransformer.cleanHTMLTags(rapidApiPhone.gpu) : 'Unknown' }
         ].filter(spec => spec.value !== 'Unknown')
       });
     }
@@ -202,8 +215,8 @@ export class DataTransformer {
       specs.push({
         category: 'Battery & Storage',
         specs: [
-          { feature: 'Battery', value: rapidApiPhone.battery || 'Unknown' },
-          { feature: 'Internal Storage', value: rapidApiPhone.internal || 'Unknown' }
+          { feature: 'Battery', value: rapidApiPhone.battery ? DataTransformer.cleanHTMLTags(rapidApiPhone.battery) : 'Unknown' },
+          { feature: 'Internal Storage', value: rapidApiPhone.internal ? DataTransformer.cleanHTMLTags(rapidApiPhone.internal) : 'Unknown' }
         ].filter(spec => spec.value !== 'Unknown')
       });
     }
@@ -313,49 +326,49 @@ export class DataTransformer {
   }
 
   private static generatePriceRange(manufacturer: string, model: string): string {
-    // Generate realistic price ranges based on brand positioning and model tier
+    // Generate realistic price ranges in PKR based on brand positioning and model tier
     const priceRanges: Record<string, { budget: string; mid: string; premium: string; flagship: string }> = {
       'apple': {
-        budget: '$429 - $499',
-        mid: '$699 - $799', 
-        premium: '$999 - $1,099',
-        flagship: '$1,199 - $1,599'
+        budget: 'Rs 119,000 - 139,000',
+        mid: 'Rs 194,000 - 222,000', 
+        premium: 'Rs 277,000 - 305,000',
+        flagship: 'Rs 333,000 - 444,000'
       },
       'samsung': {
-        budget: '$199 - $299',
-        mid: '$399 - $599',
-        premium: '$799 - $999',
-        flagship: '$1,099 - $1,399'
+        budget: 'Rs 55,000 - 83,000',
+        mid: 'Rs 111,000 - 166,000',
+        premium: 'Rs 222,000 - 277,000',
+        flagship: 'Rs 305,000 - 388,000'
       },
       'google': {
-        budget: '$399 - $499',
-        mid: '$599 - $699',
-        premium: '$899 - $999',
-        flagship: '$999 - $1,099'
+        budget: 'Rs 111,000 - 139,000',
+        mid: 'Rs 166,000 - 194,000',
+        premium: 'Rs 249,000 - 277,000',
+        flagship: 'Rs 277,000 - 305,000'
       },
       'oneplus': {
-        budget: '$299 - $399',
-        mid: '$499 - $699',
-        premium: '$699 - $899',
-        flagship: '$899 - $1,099'
+        budget: 'Rs 83,000 - 111,000',
+        mid: 'Rs 139,000 - 194,000',
+        premium: 'Rs 194,000 - 249,000',
+        flagship: 'Rs 249,000 - 305,000'
       },
       'xiaomi': {
-        budget: '$149 - $249',
-        mid: '$299 - $499',
-        premium: '$599 - $799',
-        flagship: '$799 - $999'
+        budget: 'Rs 41,000 - 69,000',
+        mid: 'Rs 83,000 - 139,000',
+        premium: 'Rs 166,000 - 222,000',
+        flagship: 'Rs 222,000 - 277,000'
       },
       'oppo': {
-        budget: '$179 - $279',
-        mid: '$349 - $549',
-        premium: '$649 - $849',
-        flagship: '$899 - $1,199'
+        budget: 'Rs 50,000 - 78,000',
+        mid: 'Rs 97,000 - 153,000',
+        premium: 'Rs 180,000 - 236,000',
+        flagship: 'Rs 249,000 - 333,000'
       },
       'vivo': {
-        budget: '$169 - $269',
-        mid: '$329 - $529',
-        premium: '$629 - $829',
-        flagship: '$879 - $1,179'
+        budget: 'Rs 47,000 - 75,000',
+        mid: 'Rs 91,000 - 147,000',
+        premium: 'Rs 175,000 - 230,000',
+        flagship: 'Rs 244,000 - 327,000'
       }
     };
 
