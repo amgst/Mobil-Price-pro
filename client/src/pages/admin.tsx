@@ -6,7 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/ui/safe-image";
-import { Plus, Edit, Trash2, Eye } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, Download } from "lucide-react";
+import { Link } from "wouter";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
 import { AdminMobileForm } from "@/components/admin/AdminMobileForm";
@@ -114,13 +115,29 @@ export default function Admin() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
-            Mobile Admin Panel
-          </h1>
-          <p className="text-gray-600 dark:text-gray-400">
-            Manage mobile phones and brands for your comparison website
-          </p>
+        <div className="mb-8 flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+              Mobile Admin Panel
+            </h1>
+            <p className="text-gray-600 dark:text-gray-400">
+              Manage mobile phones and brands for your comparison website
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Link href="/admin/import">
+              <Button variant="outline">
+                <Plus className="w-4 h-4 mr-2" />
+                Import Data
+              </Button>
+            </Link>
+            <Link href="/export">
+              <Button variant="outline">
+                <Download className="w-4 h-4 mr-2" />
+                Export Database
+              </Button>
+            </Link>
+          </div>
         </div>
 
         <Tabs defaultValue="mobiles" className="space-y-6">

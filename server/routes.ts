@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAIAnalysisRoutes } from "./ai-analysis-routes";
 import { registerSitemapRoutes } from "./sitemap-routes";
+import { registerExportRoutes } from "./export-routes";
 import { insertBrandSchema, insertMobileSchema } from "@shared/schema";
 import { aiService } from "./ai-service";
 import { z } from "zod";
@@ -13,6 +14,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Setup SEO routes (sitemap, robots.txt)
   registerSitemapRoutes(app);
+  
+  // Setup database export routes
+  registerExportRoutes(app);
   // Brands API
   app.get("/api/brands", async (req, res) => {
     try {
