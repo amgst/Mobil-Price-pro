@@ -10,12 +10,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SafeImage } from "@/components/ui/safe-image";
-import { Search, X, Plus } from "lucide-react";
+import { Search, X, Plus, Zap } from "lucide-react";
+import { ARVRHub } from "@/components/ar-vr/ar-vr-hub";
 import type { Mobile } from "@shared/schema";
 
 export default function Compare() {
   const [location, setLocation] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showARVR, setShowARVR] = useState(false);
   const { compareList, addToCompare, removeFromCompare, clearCompare } = useCompare();
 
   // Update URL when compare list changes
@@ -141,6 +143,27 @@ export default function Compare() {
               )}
             </CardContent>
           </Card>
+
+          {/* AR/VR Comparison Button */}
+          {compareMobiles.length >= 2 && (
+            <Card className="mb-8">
+              <CardContent className="p-6">
+                <div className="text-center">
+                  <Button
+                    onClick={() => setShowARVR(true)}
+                    size="lg"
+                    className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white px-8"
+                  >
+                    <Zap className="h-5 w-5 mr-2" />
+                    AR/VR Comparison Experience
+                  </Button>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    View phones in augmented reality • Virtual try-on • 3D exploration
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Comparison Table */}
           {compareMobiles.length > 0 ? (
@@ -294,6 +317,14 @@ export default function Compare() {
 
         <Footer />
       </div>
+
+      {/* AR/VR Hub Modal */}
+      {showARVR && compareMobiles.length >= 2 && (
+        <ARVRHub
+          mobiles={compareMobiles}
+          onClose={() => setShowARVR(false)}
+        />
+      )}
     </>
   );
 }
