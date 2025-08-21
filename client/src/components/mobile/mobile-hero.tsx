@@ -82,7 +82,10 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                 {mobile.shortSpecs.display && (
                   <div className="flex items-center justify-between py-2 border-b border-gray-100">
                     <span className="text-gray-600">Display</span>
-                    <span className="font-medium">{mobile.shortSpecs.display}</span>
+                    <span 
+                      className="font-medium"
+                      dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.display }}
+                    />
                   </div>
                 )}
                 {mobile.shortSpecs.processor && (
@@ -101,7 +104,10 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                 </div>
                 <div className="flex items-center justify-between py-2 border-b border-gray-100">
                   <span className="text-gray-600">Main Camera</span>
-                  <span className="font-medium">{mobile.shortSpecs.camera}</span>
+                  <span 
+                    className="font-medium"
+                    dangerouslySetInnerHTML={{ __html: mobile.shortSpecs.camera }}
+                  />
                 </div>
                 {mobile.shortSpecs.battery && (
                   <div className="flex items-center justify-between py-2 border-b border-gray-100">

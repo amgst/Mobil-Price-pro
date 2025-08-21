@@ -356,12 +356,12 @@ export default function Admin() {
                       <div className="space-y-1 text-sm">
                         <p><strong>RAM:</strong> {selectedMobile.shortSpecs.ram}</p>
                         <p><strong>Storage:</strong> {selectedMobile.shortSpecs.storage}</p>
-                        <p><strong>Camera:</strong> {selectedMobile.shortSpecs.camera}</p>
+                        <p><strong>Camera:</strong> <span dangerouslySetInnerHTML={{ __html: selectedMobile.shortSpecs.camera }} /></p>
                         {selectedMobile.shortSpecs.battery && (
                           <p><strong>Battery:</strong> {selectedMobile.shortSpecs.battery}</p>
                         )}
                         {selectedMobile.shortSpecs.display && (
-                          <p><strong>Display:</strong> {selectedMobile.shortSpecs.display}</p>
+                          <p><strong>Display:</strong> <span dangerouslySetInnerHTML={{ __html: selectedMobile.shortSpecs.display }} /></p>
                         )}
                         {selectedMobile.shortSpecs.processor && (
                           <p><strong>Processor:</strong> {selectedMobile.shortSpecs.processor}</p>
@@ -382,7 +382,7 @@ export default function Admin() {
                             {category.specs.map((spec, specIndex) => (
                               <div key={specIndex} className="flex justify-between border-b pb-1">
                                 <span className="text-gray-600 dark:text-gray-400">{spec.feature}</span>
-                                <span>{spec.value}</span>
+                                <span dangerouslySetInnerHTML={{ __html: spec.value }} />
                               </div>
                             ))}
                           </div>

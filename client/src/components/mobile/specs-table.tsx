@@ -30,9 +30,10 @@ export function SpecsTable({ specifications }: SpecsTableProps) {
                   <span className="text-gray-600 font-medium">
                     {spec.feature}
                   </span>
-                  <span className="text-gray-900 font-semibold text-right max-w-xs">
-                    {spec.value}
-                  </span>
+                  <span 
+                    className="text-gray-900 font-semibold text-right max-w-xs"
+                    dangerouslySetInnerHTML={{ __html: spec.value }}
+                  />
                 </div>
               ))}
             </div>
