@@ -27,34 +27,34 @@ interface RapidAPIPhone {
 export class DataTransformer {
   
   static transformBrand(brandName: string, phoneCount: number = 0): InsertBrand {
-    const slug = this.createSlug(brandName);
-    const logo = this.getBrandLogo(brandName);
+    const slug = DataTransformer.createSlug(brandName);
+    const logo = DataTransformer.getBrandLogo(brandName);
     
     return {
       name: brandName,
       slug: slug,
       logo: logo,
       phoneCount: phoneCount.toString(),
-      description: this.getBrandDescription(brandName)
+      description: DataTransformer.getBrandDescription(brandName)
     };
   }
 
   static transformMobile(rapidApiPhone: RapidAPIPhone): InsertMobile {
     const fullName = `${rapidApiPhone.manufacturer} ${rapidApiPhone.model}`;
-    const slug = this.createSlug(fullName);
-    const brandSlug = this.createSlug(rapidApiPhone.manufacturer);
+    const slug = DataTransformer.createSlug(fullName);
+    const brandSlug = DataTransformer.createSlug(rapidApiPhone.manufacturer);
     
     // Extract short specs from available data
-    const shortSpecs = this.extractShortSpecsFromRapidAPI(rapidApiPhone);
+    const shortSpecs = DataTransformer.extractShortSpecsFromRapidAPI(rapidApiPhone);
     
     // Transform detailed specifications
-    const specifications = this.transformDetailedSpecsFromRapidAPI(rapidApiPhone);
+    const specifications = DataTransformer.transformDetailedSpecsFromRapidAPI(rapidApiPhone);
     
-    // Generate placeholder image URL (GSMArena pattern)
-    const imageUrl = this.generateImageUrl(rapidApiPhone.manufacturer, rapidApiPhone.model);
+    // Generate high-quality GSMArena image URL
+    const imageUrl = DataTransformer.generateImageUrl(rapidApiPhone.manufacturer, rapidApiPhone.model);
     
-    // Get carousel images
-    const carouselImages = [imageUrl];
+    // Create multiple image sources for carousel (different angles/quality)
+    const carouselImages = DataTransformer.generateCarouselImages(rapidApiPhone.manufacturer, rapidApiPhone.model);
     
     return {
       slug: slug,
@@ -63,8 +63,8 @@ export class DataTransformer {
       model: rapidApiPhone.model,
       imageUrl: imageUrl,
       imagekitPath: `/mobiles/${brandSlug}/${slug}.jpg`,
-      releaseDate: this.extractReleaseDateFromAndroid(rapidApiPhone.androidVersion),
-      price: 'Price not available',
+      releaseDate: DataTransformer.extractReleaseDateFromAndroid(rapidApiPhone.androidVersion),
+      price: DataTransformer.generatePriceRange(rapidApiPhone.manufacturer, rapidApiPhone.model),
       shortSpecs: shortSpecs,
       carouselImages: carouselImages,
       specifications: specifications,
@@ -274,13 +274,107 @@ export class DataTransformer {
   }
 
   private static generateImageUrl(manufacturer: string, model: string): string {
-    // Generate GSMArena-style image URL pattern
+    // Generate high-quality GSMArena image URL pattern
     const cleanModel = model.toLowerCase()
       .replace(/[^a-z0-9\s]/g, '')
-      .replace(/\s+/g, '-');
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-') // Remove duplicate dashes
+      .replace(/^-|-$/g, ''); // Remove leading/trailing dashes
     const cleanManufacturer = manufacturer.toLowerCase();
     
-    return `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-${cleanModel}.jpg`;
+    // Try multiple GSMArena image URL patterns for better quality
+    const imagePatterns = [
+      `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-${cleanModel}.jpg`,
+      `https://fdn2.gsmarena.com/vv/pics/${cleanManufacturer}/${cleanManufacturer}-${cleanModel}-1.jpg`,
+      `https://fdn.gsmarena.com/imgroot/reviews/24/${cleanModel}/lifestyle/-1024w2/gsmarena_001.jpg`
+    ];
+    
+    // Return the first pattern (highest quality bigpic)
+    return imagePatterns[0];
+  }
+
+  private static generateCarouselImages(manufacturer: string, model: string): string[] {
+    // Generate multiple high-quality image sources for carousel
+    const cleanModel = model.toLowerCase()
+      .replace(/[^a-z0-9\s]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+    const cleanManufacturer = manufacturer.toLowerCase();
+    
+    return [
+      // Main product shot (highest quality)
+      `https://fdn2.gsmarena.com/vv/bigpic/${cleanManufacturer}-${cleanModel}.jpg`,
+      // Gallery images (multiple angles)
+      `https://fdn2.gsmarena.com/vv/pics/${cleanManufacturer}/${cleanManufacturer}-${cleanModel}-1.jpg`,
+      `https://fdn2.gsmarena.com/vv/pics/${cleanManufacturer}/${cleanManufacturer}-${cleanModel}-2.jpg`,
+      `https://fdn2.gsmarena.com/vv/pics/${cleanManufacturer}/${cleanManufacturer}-${cleanModel}-3.jpg`
+    ];
+  }
+
+  private static generatePriceRange(manufacturer: string, model: string): string {
+    // Generate realistic price ranges based on brand positioning and model tier
+    const priceRanges: Record<string, { budget: string; mid: string; premium: string; flagship: string }> = {
+      'apple': {
+        budget: '$429 - $499',
+        mid: '$699 - $799', 
+        premium: '$999 - $1,099',
+        flagship: '$1,199 - $1,599'
+      },
+      'samsung': {
+        budget: '$199 - $299',
+        mid: '$399 - $599',
+        premium: '$799 - $999',
+        flagship: '$1,099 - $1,399'
+      },
+      'google': {
+        budget: '$399 - $499',
+        mid: '$599 - $699',
+        premium: '$899 - $999',
+        flagship: '$999 - $1,099'
+      },
+      'oneplus': {
+        budget: '$299 - $399',
+        mid: '$499 - $699',
+        premium: '$699 - $899',
+        flagship: '$899 - $1,099'
+      },
+      'xiaomi': {
+        budget: '$149 - $249',
+        mid: '$299 - $499',
+        premium: '$599 - $799',
+        flagship: '$799 - $999'
+      },
+      'oppo': {
+        budget: '$179 - $279',
+        mid: '$349 - $549',
+        premium: '$649 - $849',
+        flagship: '$899 - $1,199'
+      },
+      'vivo': {
+        budget: '$169 - $269',
+        mid: '$329 - $529',
+        premium: '$629 - $829',
+        flagship: '$879 - $1,179'
+      }
+    };
+
+    const brand = manufacturer.toLowerCase();
+    const modelLower = model.toLowerCase();
+    
+    // Default to mid-range if brand not found
+    const brandPrices = priceRanges[brand] || priceRanges['samsung'];
+    
+    // Determine tier based on model keywords
+    if (modelLower.includes('pro max') || modelLower.includes('ultra') || modelLower.includes('fold') || modelLower.includes('flip')) {
+      return `${brandPrices.flagship} (Est.)`;
+    } else if (modelLower.includes('pro') || modelLower.includes('plus') || modelLower.includes('note')) {
+      return `${brandPrices.premium} (Est.)`;
+    } else if (modelLower.includes('mini') || modelLower.includes('lite') || modelLower.includes('se') || modelLower.includes('a')) {
+      return `${brandPrices.budget} (Est.)`;
+    } else {
+      return `${brandPrices.mid} (Est.)`;
+    }
   }
 
   private static extractReleaseDateFromAndroid(androidVersion?: string): string {
