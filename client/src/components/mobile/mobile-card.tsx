@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { Plus, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import type { Mobile } from "@shared/schema";
 
@@ -23,7 +24,7 @@ export function MobileCard({ mobile }: MobileCardProps) {
     <Link href={`/${mobile.brand}/${mobile.slug}`} data-testid={`mobile-card-${mobile.slug}`}>
       <div className="bg-white rounded-lg border hover:shadow-lg transition-shadow overflow-hidden cursor-pointer">
         <div className="aspect-square bg-gray-50 p-4">
-          <img
+          <SafeImage
             src={mobile.imageUrl}
             alt={mobile.name}
             className="w-full h-full object-contain"

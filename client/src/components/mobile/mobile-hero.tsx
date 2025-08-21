@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import type { Mobile } from "@shared/schema";
 
@@ -36,7 +37,7 @@ export function MobileHero({ mobile }: MobileHeroProps) {
             {/* Image Gallery */}
             <div className="lg:w-1/2 p-6">
               <div className="aspect-square bg-gray-50 rounded-lg mb-4">
-                <img
+                <SafeImage
                   src={mobile.carouselImages[selectedImage] || mobile.imageUrl}
                   alt={mobile.name}
                   className="w-full h-full object-contain rounded-lg"
@@ -56,10 +57,11 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                       }`}
                       data-testid={`mobile-hero-thumbnail-${index}`}
                     >
-                      <img
+                      <SafeImage
                         src={image}
                         alt={`${mobile.name} view ${index + 1}`}
                         className="w-full h-full object-contain rounded"
+                        showFallback={false}
                       />
                     </button>
                   ))}

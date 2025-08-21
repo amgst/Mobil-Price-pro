@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { SafeImage } from "@/components/ui/safe-image";
 import { Plus, Edit, Trash2, Eye } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
@@ -167,7 +168,7 @@ export default function Admin() {
                       </Badge>
                     </CardHeader>
                     <CardContent>
-                      <img
+                      <SafeImage
                         src={mobile.imageUrl}
                         alt={mobile.name}
                         className="w-full h-32 object-cover rounded-md mb-4"
@@ -334,7 +335,7 @@ export default function Admin() {
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <img
+                    <SafeImage
                       src={selectedMobile.imageUrl}
                       alt={selectedMobile.name}
                       className="w-full rounded-lg"

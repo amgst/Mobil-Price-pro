@@ -9,6 +9,7 @@ import { SEOHead } from "@/components/seo/seo-head";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { SafeImage } from "@/components/ui/safe-image";
 import { Search, X, Plus } from "lucide-react";
 import type { Mobile } from "@shared/schema";
 
@@ -115,7 +116,7 @@ export default function Compare() {
                       className="flex items-center justify-between p-3 border-b last:border-b-0 hover:bg-gray-50"
                     >
                       <div className="flex items-center space-x-3">
-                        <img
+                        <SafeImage
                           src={mobile.imageUrl}
                           alt={mobile.name}
                           className="w-10 h-10 object-contain rounded"
@@ -155,7 +156,7 @@ export default function Compare() {
                         {compareMobiles.map((mobile) => (
                           <th key={mobile.id} className="text-center p-4 min-w-[200px]">
                             <div className="text-center">
-                              <img
+                              <SafeImage
                                 src={mobile.imageUrl}
                                 alt={mobile.name}
                                 className="w-16 h-16 object-contain mx-auto mb-2"
