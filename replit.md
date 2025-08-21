@@ -154,4 +154,49 @@ The AR/VR integration system has been removed from the application as it was not
 - AR/VR Hub interface
 - All related UI buttons and integrations
 
-The application now focuses on core mobile comparison functionality with reliable image optimization and authentic mobile data from GSMArena via RapidAPI.
+The application now focuses on core mobile comparison functionality with reliable image optimization, authentic mobile data from GSMArena via RapidAPI, and advanced AI-powered analysis features.
+
+### AI-Powered Analysis System (Added: August 21, 2025)
+The application now features a **comprehensive AI-powered analysis system** using OpenAI's GPT-4o for enhanced mobile phone evaluation and comparison:
+
+**Core AI Features:**
+
+1. **Photo Upload Search ("Show me phones that look like this")**:
+   - Upload any phone image to find visually similar devices in the database
+   - AI analyzes design elements, form factor, camera placement, and aesthetic features
+   - Returns similarity scores and matching characteristics
+   - Integrated image analysis with fallback handling
+
+2. **Camera Quality Predictor**:
+   - AI analyzes camera specifications to predict real-world photo quality
+   - Provides detailed scores for daylight, low-light, portrait, and video performance
+   - Identifies strengths, weaknesses, and optimal use cases
+   - Compares against industry standards and similar devices
+
+3. **Screen Quality Analyzer**:
+   - Predicts display experience from technical specifications
+   - Evaluates sharpness, color accuracy, brightness, and viewing angles
+   - Recommends best usage scenarios (gaming, media, productivity)
+   - Compares display technology and quality metrics
+
+4. **Design Similarity Finder**:
+   - Finds phones with similar aesthetics and build quality
+   - Analyzes materials, form factor, design language, and brand positioning
+   - Provides detailed comparison of design elements and differences
+   - Helps users discover alternative phones with similar appeal
+
+**Technical Implementation:**
+- **Server-side AI Processing**: All AI analysis runs on secure backend endpoints
+- **Robust Fallback System**: Brand-aware fallbacks when AI services are unavailable
+- **Specification Parsing**: Intelligent extraction from complex mobile specification data
+- **Real-time Analysis**: Progressive UI with loading states and progress indicators
+- **Modal Interface**: Professional overlay system for AI features
+- **Error Handling**: Graceful degradation with informative error states
+
+**Integration Points:**
+- **Mobile Hero Component**: AI analysis buttons integrated into individual phone pages
+- **Global Access**: AI features accessible from main navigation and phone cards
+- **Compare Integration**: AI insights available during phone comparisons
+- **Search Enhancement**: Photo search complements text-based mobile discovery
+
+The AI system enhances the mobile comparison experience by providing intelligent insights that help users make more informed purchasing decisions based on their specific needs and preferences.

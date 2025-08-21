@@ -5,8 +5,21 @@ import { Card, CardContent } from "@/components/ui/card";
 import { SafeImage } from "@/components/ui/safe-image";
 import { useCompare } from "@/hooks/use-compare";
 import { ImageUtils } from "@/lib/image-utils";
-
-
+import { 
+  Heart, 
+  Share2, 
+  Plus, 
+  Check, 
+  Camera,
+  Monitor,
+  Palette,
+  Upload,
+  Sparkles
+} from "lucide-react";
+import { PhotoUploadSearch } from "@/components/ai/photo-upload-search";
+import { CameraQualityAnalyzer } from "@/components/ai/camera-quality-analyzer";
+import { ScreenQualityAnalyzer } from "@/components/ai/screen-quality-analyzer";
+import { DesignSimilarityFinder } from "@/components/ai/design-similarity-finder";
 import type { Mobile } from "@shared/schema";
 
 interface MobileHeroProps {
@@ -15,6 +28,10 @@ interface MobileHeroProps {
 
 export function MobileHero({ mobile }: MobileHeroProps) {
   const [selectedImage, setSelectedImage] = useState(0);
+  const [showPhotoSearch, setShowPhotoSearch] = useState(false);
+  const [showCameraAnalyzer, setShowCameraAnalyzer] = useState(false);
+  const [showScreenAnalyzer, setShowScreenAnalyzer] = useState(false);
+  const [showDesignFinder, setShowDesignFinder] = useState(false);
 
   const { addToCompare, isInCompare } = useCompare();
   const inCompare = isInCompare(mobile.id);
@@ -166,11 +183,69 @@ export function MobileHero({ mobile }: MobileHeroProps) {
                   disabled={inCompare}
                   data-testid="button-add-to-compare"
                 >
-                  {inCompare ? "Added to Compare" : "Add to Compare"}
+                  {inCompare ? (
+                    <>
+                      <Check className="h-4 w-4 mr-2" />
+                      Added to Compare
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="h-4 w-4 mr-2" />
+                      Add to Compare
+                    </>
+                  )}
                 </Button>
               </div>
 
-
+              {/* AI-Powered Features */}
+              <Card className="mt-6 bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-950/20 dark:to-pink-950/20 border-purple-200 dark:border-purple-800">
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Sparkles className="h-5 w-5 text-purple-600" />
+                    <h3 className="font-semibold text-purple-900 dark:text-purple-100">
+                      AI-Powered Analysis
+                    </h3>
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowPhotoSearch(true)}
+                      className="justify-start"
+                    >
+                      <Upload className="h-4 w-4 mr-2" />
+                      Photo Search
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowCameraAnalyzer(true)}
+                      className="justify-start"
+                    >
+                      <Camera className="h-4 w-4 mr-2" />
+                      Camera Analysis
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowScreenAnalyzer(true)}
+                      className="justify-start"
+                    >
+                      <Monitor className="h-4 w-4 mr-2" />
+                      Screen Quality
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowDesignFinder(true)}
+                      className="justify-start"
+                    >
+                      <Palette className="h-4 w-4 mr-2" />
+                      Similar Designs
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
 
               {/* Release Date */}
               <div className="mt-6 text-sm text-gray-600">
@@ -181,7 +256,31 @@ export function MobileHero({ mobile }: MobileHeroProps) {
         </CardContent>
       </Card>
 
-
+      {/* AI Modal Components */}
+      {showPhotoSearch && (
+        <PhotoUploadSearch onClose={() => setShowPhotoSearch(false)} />
+      )}
+      
+      {showCameraAnalyzer && (
+        <CameraQualityAnalyzer 
+          mobile={mobile} 
+          onClose={() => setShowCameraAnalyzer(false)} 
+        />
+      )}
+      
+      {showScreenAnalyzer && (
+        <ScreenQualityAnalyzer 
+          mobile={mobile} 
+          onClose={() => setShowScreenAnalyzer(false)} 
+        />
+      )}
+      
+      {showDesignFinder && (
+        <DesignSimilarityFinder 
+          mobile={mobile} 
+          onClose={() => setShowDesignFinder(false)} 
+        />
+      )}
     </section>
   );
 }
