@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, jsonb, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, jsonb, timestamp, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -10,6 +10,7 @@ export const brands = pgTable("brands", {
   logo: text("logo"),
   phoneCount: text("phone_count").default("0"),
   description: text("description"),
+  isVisible: boolean("is_visible").default(true),
   createdAt: timestamp("created_at").defaultNow(),
 });
 

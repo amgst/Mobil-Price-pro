@@ -247,12 +247,13 @@ export class DatabaseStorage implements IStorage {
         slug: brands.slug,
         logo: brands.logo,
         description: brands.description,
+        isVisible: brands.isVisible,
         createdAt: brands.createdAt,
         phoneCount: sql<string>`CAST(COUNT(${mobiles.id}) AS TEXT)`.as('phoneCount')
       })
       .from(brands)
       .leftJoin(mobiles, eq(brands.slug, mobiles.brand))
-      .groupBy(brands.id, brands.name, brands.slug, brands.logo, brands.description, brands.createdAt)
+      .groupBy(brands.id, brands.name, brands.slug, brands.logo, brands.description, brands.isVisible, brands.createdAt)
       .orderBy(brands.name);
     
     return result;
@@ -326,6 +327,15 @@ export class DatabaseStorage implements IStorage {
   async createBrand(brand: InsertBrand): Promise<Brand> {
     const [newBrand] = await db.insert(brands).values(brand).returning();
     return newBrand;
+  }
+
+  async updateBrand(id: string, brand: Partial<InsertBrand>): Promise<Brand> {
+    const [updatedBrand] = await db
+      .update(brands)
+      .set(brand)
+      .where(eq(brands.id, id))
+      .returning();
+    return updatedBrand;
   }
 
   async updateMobile(id: string, mobile: Partial<InsertMobile>): Promise<Mobile> {

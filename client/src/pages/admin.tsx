@@ -251,9 +251,14 @@ export default function Admin() {
                         </div>
                         {brand.name}
                       </CardTitle>
-                      <Badge variant="secondary">
-                        {brand.phoneCount} phones
-                      </Badge>
+                      <div className="flex gap-2">
+                        <Badge variant="secondary">
+                          {brand.phoneCount} phones
+                        </Badge>
+                        <Badge variant={brand.isVisible !== false ? "default" : "destructive"}>
+                          {brand.isVisible !== false ? "Visible" : "Hidden"}
+                        </Badge>
+                      </div>
                     </CardHeader>
                     <CardContent>
                       <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">

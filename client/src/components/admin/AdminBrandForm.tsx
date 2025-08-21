@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { Switch } from "@/components/ui/switch";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { insertBrandSchema } from "@shared/schema";
@@ -30,12 +31,14 @@ export function AdminBrandForm({ brand, onSuccess }: AdminBrandFormProps) {
       logo: brand.logo || "",
       phoneCount: brand.phoneCount || "",
       description: brand.description || "",
+      isVisible: brand.isVisible !== false,
     } : {
       name: "",
       slug: "",
       logo: "",
       phoneCount: "",
       description: "",
+      isVisible: true,
     },
   });
 
@@ -145,6 +148,18 @@ export function AdminBrandForm({ brand, onSuccess }: AdminBrandFormProps) {
               rows={3}
               data-testid="input-brand-description"
             />
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="isVisible"
+              checked={form.watch("isVisible") || false}
+              onCheckedChange={(checked) => form.setValue("isVisible", checked)}
+              data-testid="switch-brand-visibility"
+            />
+            <Label htmlFor="isVisible" className="text-sm font-medium">
+              Brand Visible on Website
+            </Label>
           </div>
         </CardContent>
       </Card>

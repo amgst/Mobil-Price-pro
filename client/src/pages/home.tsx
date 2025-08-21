@@ -97,7 +97,10 @@ export default function Home() {
               </div>
             ) : (
               <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {brands?.slice(0, 6).map((brand) => (
+                {brands?.filter(brand => 
+                  brand.isVisible !== false && 
+                  parseInt(brand.phoneCount || '0') >= 5
+                ).slice(0, 6).map((brand) => (
                   <a
                     key={brand.id}
                     href={`/${brand.slug}`}

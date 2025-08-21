@@ -54,6 +54,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.put("/api/admin/brands/:id", async (req, res) => {
+    try {
+      const brandData = insertBrandSchema.partial().parse(req.body);
+      const brand = await storage.updateBrand(req.params.id, brandData);
+      res.json(brand);
+    } catch (error) {
+      if (error instanceof z.ZodError) {
+        return res.status(400).json({ message: "Invalid brand data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update brand" });
+    }
+  });
+
   app.delete("/api/admin/brands/:id", async (req, res) => {
     try {
       await storage.deleteBrand(req.params.id);
