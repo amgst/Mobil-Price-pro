@@ -16,7 +16,11 @@ export function ProtectedAdmin({ children }: ProtectedAdminProps) {
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
-      setLocation("/admin/login");
+      // Add a small delay to prevent redirect loops
+      const timer = setTimeout(() => {
+        setLocation("/admin/login");
+      }, 100);
+      return () => clearTimeout(timer);
     }
   }, [isAuthenticated, isLoading, setLocation]);
 

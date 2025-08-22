@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation } from "wouter";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,6 +28,7 @@ export default function AdminLogin() {
   const [error, setError] = useState("");
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   // Check if already authenticated
   const { data: authStatus } = useQuery<AuthStatus>({
@@ -60,11 +61,16 @@ export default function AdminLogin() {
     },
     onSuccess: (data) => {
       if (data.success) {
+        // Force refresh auth status
+        queryClient.invalidateQueries({ queryKey: ["/api/auth/status"] });
         toast({
           title: "Login Successful",
           description: "Welcome to the admin panel",
         });
-        setLocation(data.redirectTo || "/admin");
+        // Add a small delay to ensure auth status is updated
+        setTimeout(() => {
+          setLocation(data.redirectTo || "/admin");
+        }, 100);
       } else {
         setError(data.message);
       }

@@ -14,7 +14,8 @@ export function useAuth() {
   const { data: authStatus, isLoading } = useQuery<AuthStatus>({
     queryKey: ["/api/auth/status"],
     retry: false,
-    staleTime: 5 * 60 * 1000, // 5 minutes
+    staleTime: 1 * 60 * 1000, // 1 minute
+    refetchOnWindowFocus: false,
   });
 
   const logoutMutation = useMutation({
