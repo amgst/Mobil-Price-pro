@@ -46,9 +46,9 @@ export class ImportService {
     return results;
   }
 
-  async importLatestMobiles(limit: number = 50): Promise<{ success: number; errors: string[] }> {
+  async importLatestMobiles(limit: number = 50): Promise<{ success: number; errors: string[]; existing: number; processed: number }> {
     console.log(`Starting import of up to ${limit} latest mobiles from RapidAPI...`);
-    const results = { success: 0, errors: [] as string[] };
+    const results = { success: 0, errors: [] as string[], existing: 0, processed: 0 };
 
     try {
       // Since getAllDeviceSpecs isn't working, let's try getting phones from popular brands
@@ -97,7 +97,7 @@ export class ImportService {
       results.errors.push(errorMsg);
     }
 
-    console.log(`Mobile import completed. Success: ${results.success}, Errors: ${results.errors.length}`);
+    console.log(`Mobile import completed. Success: ${results.success}, Existing: ${results.existing}, Errors: ${results.errors.length}`);
     return results;
   }
 

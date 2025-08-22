@@ -13,6 +13,8 @@ import { ProtectedAdmin } from '@/components/admin/protected-admin';
 interface ImportResult {
   success: number;
   errors: string[];
+  existing?: number;
+  processed?: number;
 }
 
 interface ImportStatus {
@@ -106,14 +108,29 @@ function AdminImport() {
 
     if (result) {
       const errors = result.errors || [];
+      const hasNewImports = (result.success || 0) > 0;
+      const hasExisting = (result.existing || 0) > 0;
+      const processed = result.processed || result.success || 0;
+      
       return (
-        <Alert className={errors.length > 0 ? "border-yellow-500" : "border-green-500"}>
+        <Alert className={errors.length > 0 ? "border-yellow-500" : hasNewImports ? "border-green-500" : "border-blue-500"}>
           <AlertDescription>
             <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Badge variant="secondary">{result.success || 0} imported</Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                {hasNewImports && (
+                  <Badge variant="default" className="bg-green-600">{result.success} new imported</Badge>
+                )}
+                {hasExisting && (
+                  <Badge variant="secondary">{result.existing} already existed</Badge>
+                )}
+                {processed > 0 && !hasNewImports && !hasExisting && (
+                  <Badge variant="secondary">{processed} processed</Badge>
+                )}
                 {errors.length > 0 && (
                   <Badge variant="destructive">{errors.length} errors</Badge>
+                )}
+                {!hasNewImports && !hasExisting && processed === 0 && errors.length === 0 && (
+                  <Badge variant="outline">No items found</Badge>
                 )}
               </div>
               {errors.length > 0 && (
