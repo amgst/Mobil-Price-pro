@@ -9,7 +9,7 @@ export interface SitemapEntry {
 }
 
 export function generateSitemapEntries(mobiles: any[], brands: any[]): SitemapEntry[] {
-  const baseUrl = 'https://mobileprices.pk';
+  const baseUrl = 'https://mobile-price.com';
   const entries: SitemapEntry[] = [];
   
   // Home page

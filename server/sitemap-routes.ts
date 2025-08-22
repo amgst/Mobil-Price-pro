@@ -29,7 +29,7 @@ export function registerSitemapRoutes(app: Express) {
 
   // Robots.txt endpoint
   app.get('/robots.txt', (req: Request, res: Response) => {
-    const baseUrl = process.env.VITE_SITE_URL || 'https://mobileprices.pk';
+    const baseUrl = process.env.VITE_SITE_URL || 'https://mobile-price.com';
     
     const robotsTxt = `User-agent: *
 Allow: /
