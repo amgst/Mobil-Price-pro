@@ -72,6 +72,7 @@ export class ImportService {
       for (const rapidApiPhone of phones) {
         try {
           const transformedMobile = DataTransformer.transformMobile(rapidApiPhone);
+          results.processed++;
           
           // Check if mobile already exists
           const existingMobile = await storage.getMobileBySlug(transformedMobile.brand, transformedMobile.slug);
@@ -80,6 +81,7 @@ export class ImportService {
             results.success++;
             console.log(`✓ Imported mobile: ${transformedMobile.name}`);
           } else {
+            results.existing++;
             console.log(`- Mobile already exists: ${transformedMobile.name}`);
           }
 
