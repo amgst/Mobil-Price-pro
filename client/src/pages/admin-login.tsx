@@ -36,12 +36,6 @@ export default function AdminLogin() {
     retry: false
   });
 
-  // Redirect if already authenticated
-  if (authStatus?.isAuthenticated) {
-    setLocation("/admin");
-    return null;
-  }
-
   const loginMutation = useMutation({
     mutationFn: async (credentials: { username: string; password: string }) => {
       const response = await fetch("/api/auth/login", {
@@ -80,6 +74,12 @@ export default function AdminLogin() {
       setError(error?.message || "Login failed. Please try again.");
     },
   });
+
+  // Redirect if already authenticated (after all hooks are declared)
+  if (authStatus?.isAuthenticated) {
+    setLocation("/admin");
+    return null;
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
