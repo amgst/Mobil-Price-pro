@@ -4,6 +4,7 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Breadcrumbs } from "@/components/layout/breadcrumbs";
 import { SEOHead } from "@/components/seo/seo-head";
+import { ProtectedAdmin } from "@/components/admin/protected-admin";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -85,10 +86,7 @@ export default function Export() {
         noIndex={true}
       />
       
-      <div className="min-h-screen bg-gray-50">
-        <Header />
-        <Breadcrumbs items={breadcrumbs} />
-        
+      <ProtectedAdmin>
         <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-gray-900 mb-4">Database Export</h1>
@@ -346,9 +344,7 @@ export default function Export() {
             </div>
           )}
         </main>
-
-        <Footer />
-      </div>
+      </ProtectedAdmin>
     </>
   );
 }

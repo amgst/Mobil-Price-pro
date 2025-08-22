@@ -14,6 +14,7 @@ import Search from "@/pages/search";
 import Compare from "@/pages/compare";
 import Admin from "@/pages/admin";
 import AdminImport from "@/pages/AdminImport";
+import AdminLogin from "@/pages/admin-login";
 import Export from "@/pages/export";
 import Reviews from "@/pages/reviews";
 import Guide from "@/pages/guide";
@@ -35,6 +36,7 @@ function Router() {
       <Route path="/terms" component={Terms} />
       <Route path="/admin" component={Admin} />
       <Route path="/admin/import" component={AdminImport} />
+      <Route path="/admin/login" component={AdminLogin} />
       <Route path="/export" component={Export} />
       <Route path="/:brand" component={BrandCategory} />
       <Route path="/:brand/:model" component={MobileDetail} />

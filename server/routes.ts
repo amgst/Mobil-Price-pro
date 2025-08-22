@@ -6,17 +6,37 @@ import { registerSitemapRoutes } from "./sitemap-routes";
 import { registerExportRoutes } from "./export-routes";
 import { insertBrandSchema, insertMobileSchema } from "@shared/schema";
 import { aiService } from "./ai-service";
+import { 
+  setupAuthMiddleware, 
+  requireAuth, 
+  handleLogin, 
+  handleLogout, 
+  checkAuthStatus 
+} from "./auth-middleware";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Setup authentication middleware
+  setupAuthMiddleware(app);
+  
+  // Auth routes (public)
+  app.post("/api/auth/login", handleLogin);
+  app.post("/api/auth/logout", handleLogout);
+  app.get("/api/auth/status", checkAuthStatus);
+  
   // Setup AI Analysis routes
   setupAIAnalysisRoutes(app);
   
   // Setup SEO routes (sitemap, robots.txt)
   registerSitemapRoutes(app);
   
-  // Setup database export routes
+  // Setup database export routes (protected)
+  app.use('/api/export', requireAuth);
   registerExportRoutes(app);
+  
+  // Protect all admin routes
+  app.use('/api/admin', requireAuth);
+  
   // Brands API
   app.get("/api/brands", async (req, res) => {
     try {

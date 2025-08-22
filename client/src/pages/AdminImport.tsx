@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Badge } from '@/components/ui/badge';
 import { Loader2, Download, Database, Search, TrendingUp, Building } from 'lucide-react';
 import { apiRequest } from '@/lib/queryClient';
+import { ProtectedAdmin } from '@/components/admin/protected-admin';
 
 interface ImportResult {
   success: number;
@@ -20,7 +21,7 @@ interface ImportStatus {
   lastImport: string;
 }
 
-export function AdminImport() {
+function AdminImport() {
   const [searchQuery, setSearchQuery] = useState('');
   const [brandName, setBrandName] = useState('');
   const [importLimit, setImportLimit] = useState(50);
@@ -35,8 +36,10 @@ export function AdminImport() {
 
   // Import mutations
   const importLatestMutation = useMutation<ImportResult, Error, number>({
-    mutationFn: (limit: number) => 
-      apiRequest(`/api/admin/import/latest?limit=${limit}`, { method: 'POST' }),
+    mutationFn: async (limit: number) => {
+      const response = await apiRequest(`/api/admin/import/latest?limit=${limit}`, { method: 'POST' });
+      return response as ImportResult;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/import/status'] });
       queryClient.invalidateQueries({ queryKey: ['/api/mobiles'] });
@@ -44,8 +47,10 @@ export function AdminImport() {
   });
 
   const importBrandsMutation = useMutation<ImportResult, Error, void>({
-    mutationFn: () => 
-      apiRequest('/api/admin/import/brands', { method: 'POST' }),
+    mutationFn: async () => {
+      const response = await apiRequest('/api/admin/import/brands', { method: 'POST' });
+      return response as ImportResult;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/import/status'] });
       queryClient.invalidateQueries({ queryKey: ['/api/brands'] });
@@ -53,8 +58,10 @@ export function AdminImport() {
   });
 
   const importPopularMutation = useMutation<ImportResult, Error, void>({
-    mutationFn: () => 
-      apiRequest('/api/admin/import/popular', { method: 'POST' }),
+    mutationFn: async () => {
+      const response = await apiRequest('/api/admin/import/popular', { method: 'POST' });
+      return response as ImportResult;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/import/status'] });
       queryClient.invalidateQueries({ queryKey: ['/api/mobiles'] });
@@ -62,8 +69,10 @@ export function AdminImport() {
   });
 
   const importBrandMutation = useMutation<ImportResult, Error, { brand: string; limit: number }>({
-    mutationFn: ({ brand, limit }: { brand: string; limit: number }) => 
-      apiRequest(`/api/admin/import/brand/${encodeURIComponent(brand)}?limit=${limit}`, { method: 'POST' }),
+    mutationFn: async ({ brand, limit }) => {
+      const response = await apiRequest(`/api/admin/import/brand/${encodeURIComponent(brand)}?limit=${limit}`, { method: 'POST' });
+      return response as ImportResult;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/import/status'] });
       queryClient.invalidateQueries({ queryKey: ['/api/mobiles'] });
@@ -71,12 +80,14 @@ export function AdminImport() {
   });
 
   const searchImportMutation = useMutation<ImportResult, Error, { query: string; limit: number }>({
-    mutationFn: ({ query, limit }: { query: string; limit: number }) => 
-      apiRequest('/api/admin/import/search', { 
+    mutationFn: async ({ query, limit }) => {
+      const response = await apiRequest('/api/admin/import/search', { 
         method: 'POST',
         body: JSON.stringify({ query, limit }),
         headers: { 'Content-Type': 'application/json' }
-      }),
+      });
+      return response as ImportResult;
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin/import/status'] });
       queryClient.invalidateQueries({ queryKey: ['/api/mobiles'] });
@@ -125,7 +136,8 @@ export function AdminImport() {
   };
 
   return (
-    <div className="container mx-auto py-8 space-y-6">
+    <ProtectedAdmin>
+      <div className="container mx-auto py-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold">Data Import Management</h1>
@@ -331,8 +343,10 @@ export function AdminImport() {
           {renderImportResult(importBrandMutation.data, importBrandMutation.isPending, `${brandName} Mobiles`)}
         </CardContent>
       </Card>
-    </div>
+      </div>
+    </ProtectedAdmin>
   );
 }
 
 export default AdminImport;
+

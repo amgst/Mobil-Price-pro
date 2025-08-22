@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useToast } from "@/hooks/use-toast";
 import { AdminMobileForm } from "@/components/admin/AdminMobileForm";
 import { AdminBrandForm } from "@/components/admin/AdminBrandForm";
+import { ProtectedAdmin } from "@/components/admin/protected-admin";
 import type { Mobile, Brand } from "@shared/schema";
 
 export default function Admin() {
@@ -113,7 +114,7 @@ export default function Admin() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <ProtectedAdmin>
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
@@ -419,6 +420,6 @@ export default function Admin() {
           </DialogContent>
         </Dialog>
       </div>
-    </div>
+    </ProtectedAdmin>
   );
 }
