@@ -39,7 +39,8 @@ app.use((req, res, next) => {
   next();
 });
 
-(async () => {
+// Initialize routes and setup
+async function initializeApp() {
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -70,7 +71,12 @@ app.use((req, res, next) => {
   } else {
     serveStatic(app);
   }
-})();
+  
+  return app;
+}
+
+// Initialize the app
+const appPromise = initializeApp();
 
 // Export the app for Vercel
-export default app;
+export default appPromise;
