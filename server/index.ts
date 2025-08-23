@@ -39,8 +39,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes and setup
-async function initializeApp() {
+// Initialize routes synchronously for Vercel
+let isInitialized = false;
+
+async function ensureInitialized() {
+  if (isInitialized) return;
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -72,11 +76,22 @@ async function initializeApp() {
     serveStatic(app);
   }
   
-  return app;
+  isInitialized = true;
 }
 
-// Initialize the app
-const appPromise = initializeApp();
+// Wrap the app to ensure initialization
+const wrappedApp = (req: any, res: any) => {
+  ensureInitialized().then(() => {
+    app(req, res);
+  }).catch((err) => {
+    console.error('Failed to initialize app:', err);
+    res.status(500).json({ error: 'Internal Server Error' });
+  });
+};
 
-// Export the app for Vercel
-export default appPromise;
+// Copy app properties to wrapped function
+Object.setPrototypeOf(wrappedApp, app);
+Object.assign(wrappedApp, app);
+
+// Export the wrapped app for Vercel
+export default wrappedApp;
