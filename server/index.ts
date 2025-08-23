@@ -52,15 +52,11 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
 if (app.get("env") === "development") {
   await setupVite(app, server);
 
-  const port = process.env.PORT || 5000;
-  app.listen(port, () => {
+  const port = parseInt(process.env.PORT || "5000");
+  server.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
+    log(`serving on port ${port}`);
   });
-
-  server.listen(
-    { port, host: "localhost" },
-    () => log(`serving on port ${port}`)
-  );
 } else {
   // For Vercel production
   serveStatic(app);

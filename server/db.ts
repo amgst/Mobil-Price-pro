@@ -7,12 +7,11 @@ neonConfig.fetchConnectionCache = true;
 
 // Set WebSocket constructor for Node.js environments
 if (typeof window === 'undefined' && !process.env.VERCEL && !process.env.REPLIT_DEPLOYMENT) {
-  try {
-    const { WebSocket } = await import('ws');
+  import('ws').then(({ WebSocket }) => {
     neonConfig.webSocketConstructor = WebSocket;
-  } catch (error) {
+  }).catch(() => {
     console.warn('WebSocket constructor not available, using HTTP fallback');
-  }
+  });
 }
 
 // Get database URL from environment variables
