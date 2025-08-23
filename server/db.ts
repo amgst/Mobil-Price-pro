@@ -3,10 +3,18 @@ dotenv.config();
 
 import { Pool, neonConfig } from '@neondatabase/serverless';
 import { drizzle } from 'drizzle-orm/neon-serverless';
-import ws from "ws";
 import * as schema from "../shared/schema.js";
 
-neonConfig.webSocketConstructor = ws;
+// Only set WebSocket constructor in non-serverless environments
+if (typeof window === 'undefined' && !process.env.VERCEL) {
+  try {
+    const ws = require("ws");
+    neonConfig.webSocketConstructor = ws;
+  } catch (error) {
+    // WebSocket not available, continue without it
+    console.warn('WebSocket constructor not available:', error.message);
+  }
+}
 
 if (!process.env.DATABASE_URL) {
   throw new Error(
