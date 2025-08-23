@@ -1,6 +1,6 @@
-import { RapidAPIService } from './rapidapi-service';
-import { DataTransformer } from './data-transformer';
-import { storage } from '../storage';
+import { RapidAPIService } from './rapidapi-service.js';
+import { DataTransformer } from './data-transformer.js';
+import { storage } from '../storage.js';
 
 export class ImportService {
   private rapidApi: RapidAPIService;

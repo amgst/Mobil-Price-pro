@@ -1,16 +1,20 @@
 import type { Express } from "express";
 import OpenAI from "openai";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 
 // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-const openai = new OpenAI({ 
+const openai = process.env.OPENAI_API_KEY ? new OpenAI({ 
   apiKey: process.env.OPENAI_API_KEY 
-});
+}) : null;
 
 export function setupAIAnalysisRoutes(app: Express) {
   // Camera Quality Analysis
   app.post('/api/ai/analyze-camera', async (req, res) => {
     try {
+      if (!openai) {
+        return res.status(503).json({ error: 'OpenAI API key not configured. AI analysis features are unavailable.' });
+      }
+      
       const { mobileId } = req.body;
       const mobile = await storage.getMobile(mobileId);
       
@@ -66,6 +70,10 @@ Consider factors like megapixel count, aperture, sensor size, optical image stab
   // Screen Quality Analysis
   app.post('/api/ai/analyze-screen', async (req, res) => {
     try {
+      if (!openai) {
+        return res.status(503).json({ error: 'OpenAI API key not configured. AI analysis features are unavailable.' });
+      }
+      
       const { mobileId } = req.body;
       const mobile = await storage.getMobile(mobileId);
       
@@ -122,6 +130,10 @@ Consider resolution, PPI, panel type (OLED/LCD), refresh rate, brightness levels
   // Design Similarity Analysis
   app.post('/api/ai/find-similar-designs', async (req, res) => {
     try {
+      if (!openai) {
+        return res.status(503).json({ error: 'OpenAI API key not configured. AI analysis features are unavailable.' });
+      }
+      
       const { targetMobileId, candidateIds } = req.body;
       const targetMobile = await storage.getMobile(targetMobileId);
       
@@ -202,6 +214,10 @@ Provide comparison in JSON format with:
   // Photo Similarity Analysis
   app.post('/api/ai/find-similar-photos', async (req, res) => {
     try {
+      if (!openai) {
+        return res.status(503).json({ error: 'OpenAI API key not configured. AI analysis features are unavailable.' });
+      }
+      
       const { imageBase64, mobileIds } = req.body;
 
       const prompt = `Analyze this phone image and identify key visual characteristics:

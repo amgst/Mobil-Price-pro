@@ -1,18 +1,18 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
-import { storage } from "./storage";
-import { setupAIAnalysisRoutes } from "./ai-analysis-routes";
-import { registerSitemapRoutes } from "./sitemap-routes";
-import { registerExportRoutes } from "./export-routes";
-import { insertBrandSchema, insertMobileSchema } from "@shared/schema";
-import { aiService } from "./ai-service";
+import { storage } from "./storage.js";
+import { setupAIAnalysisRoutes } from "./ai-analysis-routes.js";
+import { registerSitemapRoutes } from "./sitemap-routes.js";
+import { registerExportRoutes } from "./export-routes.js";
+import { insertBrandSchema, insertMobileSchema } from "../shared/schema.js";
+import { aiService } from "./ai-service.js";
 import { 
   setupAuthMiddleware, 
   requireAuth, 
   handleLogin, 
   handleLogout, 
   checkAuthStatus 
-} from "./auth-middleware";
+} from "./auth-middleware.js";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
