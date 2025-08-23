@@ -5,7 +5,8 @@
       "src": "server/index.ts",
       "use": "@vercel/node",
       "config": {
-        "includeFiles": ["shared/**", "dist/public/**"]
+        "includeFiles": ["shared/**", "dist/public/**"],
+        "maxDuration": 30
       }
     },
     {
@@ -28,10 +29,5 @@
   ],
   "env": {
     "NODE_ENV": "production"
-  },
-  "functions": {
-    "server/index.ts": {
-      "maxDuration": 30
-    }
   }
 }
