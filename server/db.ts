@@ -5,19 +5,32 @@ import * as schema from "../shared/schema.js";
 // Configure Neon for serverless environments
 neonConfig.fetchConnectionCache = true;
 
-// Only set WebSocket constructor in non-serverless environments
-if (typeof window === 'undefined' && !process.env.VERCEL) {
+// Set WebSocket constructor for Node.js environments
+if (typeof window === 'undefined' && !process.env.VERCEL && !process.env.REPLIT_DEPLOYMENT) {
   try {
-    const ws = require("ws");
-    neonConfig.webSocketConstructor = ws;
+    const { WebSocket } = await import('ws');
+    neonConfig.webSocketConstructor = WebSocket;
   } catch (error) {
-    // WebSocket not available, continue without it
-    console.warn('WebSocket constructor not available:', error.message);
+    console.warn('WebSocket constructor not available, using HTTP fallback');
   }
 }
 
-// Direct Neon database connection with proper SSL configuration for Vercel
-const DATABASE_URL = "postgresql://neondb_owner:npg_yxlY28rJcMFv@ep-lively-unit-adtogwhk-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require";
+// Get database URL from environment variables
+if (!process.env.DATABASE_URL) {
+  throw new Error(
+    "DATABASE_URL must be set. Add your Neon database URL to environment variables.",
+  );
+}
 
-export const pool = new Pool({ connectionString: DATABASE_URL });
+// Connection pool configuration optimized for serverless
+const poolConfig = {
+  connectionString: process.env.DATABASE_URL,
+  // Vercel serverless optimizations
+  ...(process.env.VERCEL && {
+    maxUses: 1,
+    max: 1
+  })
+};
+
+export const pool = new Pool(poolConfig);
 export const db = drizzle({ client: pool, schema });
