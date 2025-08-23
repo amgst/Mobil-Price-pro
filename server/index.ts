@@ -1,3 +1,6 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
@@ -63,9 +66,14 @@ app.use((req, res, next) => {
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen({
     port,
-    host: "0.0.0.0",
-    reusePort: true,
+    host: "localhost",
   }, () => {
     log(`serving on port ${port}`);
   });
+  
+  // Also listen on 0.0.0.0 for external access if needed
+  // Uncomment the following lines if you need external access:
+  // server.listen(port, '0.0.0.0', () => {
+  //   log(`serving on 0.0.0.0:${port}`);
+  // });
 })();
