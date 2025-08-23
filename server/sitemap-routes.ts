@@ -1,5 +1,5 @@
 import type { Express, Request, Response } from "express";
-import { storage } from "./storage";
+import { storage } from "./storage.js";
 import { generateSitemapEntries, generateSitemapXML } from "../client/src/components/seo/sitemap-generator";
 
 export function registerSitemapRoutes(app: Express) {
