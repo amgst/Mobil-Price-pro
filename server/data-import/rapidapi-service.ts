@@ -1,4 +1,4 @@
-import { InsertMobile, InsertBrand } from "@shared/schema";
+import { InsertMobile, InsertBrand } from "../../shared/schema.js";
 
 interface RapidAPIPhone {
   id: number;

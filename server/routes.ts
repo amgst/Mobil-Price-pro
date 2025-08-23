@@ -4,7 +4,7 @@ import { storage } from "./storage.js";
 import { setupAIAnalysisRoutes } from "./ai-analysis-routes.js";
 import { registerSitemapRoutes } from "./sitemap-routes.js";
 import { registerExportRoutes } from "./export-routes.js";
-import { insertBrandSchema, insertMobileSchema } from "@shared/schema";
+import { insertBrandSchema, insertMobileSchema } from "../shared/schema.js";
 import { aiService } from "./ai-service.js";
 import { 
   setupAuthMiddleware, 

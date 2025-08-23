@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Brand, type InsertBrand, type Mobile, type InsertMobile, users, brands, mobiles } from "@shared/schema";
+import { type User, type InsertUser, type Brand, type InsertBrand, type Mobile, type InsertMobile, users, brands, mobiles } from "../shared/schema.js";
 import { eq, like, or, and, sql } from "drizzle-orm";
 import { db } from "./db.js";
 

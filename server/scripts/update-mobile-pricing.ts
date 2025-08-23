@@ -1,7 +1,7 @@
 #!/usr/bin/env tsx
 
 import { db } from "../db";
-import { mobiles } from "@shared/schema";
+import { mobiles } from "../../shared/schema.js";
 import { eq } from "drizzle-orm";
 
 // Enhanced pricing logic (same as in data-transformer.ts)
