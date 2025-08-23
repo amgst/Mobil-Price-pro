@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { db } from "../db";
+import { db } from "../db.js";
 import { mobiles, brands } from "../../shared/schema.js";
 
 async function clearDatabase() {

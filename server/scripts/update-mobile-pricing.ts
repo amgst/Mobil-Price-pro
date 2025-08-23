@@ -1,6 +1,6 @@
 #!/usr/bin/env tsx
 
-import { db } from "../db";
+import { db } from "../db.js";
 import { mobiles } from "../../shared/schema.js";
 import { eq } from "drizzle-orm";
 

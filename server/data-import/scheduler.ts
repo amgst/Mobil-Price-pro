@@ -1,4 +1,4 @@
-import { ImportService } from './import-service';
+import { ImportService } from './import-service.js';
 
 export class ImportScheduler {
   private importService: ImportService;

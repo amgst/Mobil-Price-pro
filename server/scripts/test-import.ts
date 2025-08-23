@@ -1,4 +1,4 @@
-import { ImportService } from '../data-import/import-service';
+import { ImportService } from '../data-import/import-service.js';
 
 async function testImport() {
   console.log('🚀 Starting Mobile Data Import Test');
