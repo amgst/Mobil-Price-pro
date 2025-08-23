@@ -27,8 +27,17 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
+  private initialized = false;
+
   constructor() {
-    this.initializeData();
+    // Don't initialize data in constructor for serverless environments
+  }
+
+  private async ensureInitialized() {
+    if (!this.initialized) {
+      await this.initializeData();
+      this.initialized = true;
+    }
   }
 
   private async initializeData() {
@@ -239,6 +248,7 @@ export class DatabaseStorage implements IStorage {
 
   // Brand operations
   async getAllBrands(): Promise<Brand[]> {
+    await this.ensureInitialized();
     // Get brands with dynamically calculated phone counts
     const result = await db
       .select({
@@ -260,6 +270,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getBrandBySlug(slug: string): Promise<Brand | undefined> {
+    await this.ensureInitialized();
     const [brand] = await db.select().from(brands).where(eq(brands.slug, slug));
     return brand;
   }
@@ -286,6 +297,7 @@ export class DatabaseStorage implements IStorage {
 
   // Mobile operations
   async getAllMobiles(): Promise<Mobile[]> {
+    await this.ensureInitialized();
     return await db.select().from(mobiles);
   }
 
@@ -321,6 +333,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeaturedMobiles(): Promise<Mobile[]> {
+    await this.ensureInitialized();
     return await db.select().from(mobiles).limit(8);
   }
 

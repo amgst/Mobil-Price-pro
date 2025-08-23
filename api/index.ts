@@ -31,10 +31,21 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     // Initialize routes if not already done
     await initializeRoutes();
     
-    // Handle the request
-    app(req as any, res as any);
+    // Handle the request using app as middleware
+    return new Promise<void>((resolve, reject) => {
+      app(req as any, res as any, (err: any) => {
+        if (err) {
+          console.error('Express app error:', err);
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   } catch (error) {
     console.error('Vercel handler error:', error);
-    res.status(500).json({ error: 'Internal server error' });
+    if (!res.headersSent) {
+      res.status(500).json({ error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' });
+    }
   }
 }
