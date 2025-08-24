@@ -7,22 +7,18 @@ import { registerExportRoutes } from "./export-routes.js";
 import { insertBrandSchema, insertMobileSchema } from "../shared/schema.js";
 import { aiService } from "./ai-service.js";
 import { 
-  setupAuthMiddleware, 
-  requireAuth, 
-  handleLogin, 
-  handleLogout, 
-  checkAuthStatus 
-} from "./auth-middleware.js";
+  requireJWTAuth, 
+  handleJWTLogin, 
+  handleJWTLogout, 
+  checkJWTAuthStatus 
+} from "./jwt-auth-middleware.js";
 import { z } from "zod";
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Setup authentication middleware
-  setupAuthMiddleware(app);
-  
   // Auth routes (public)
-  app.post("/api/auth/login", handleLogin);
-  app.post("/api/auth/logout", handleLogout);
-  app.get("/api/auth/status", checkAuthStatus);
+  app.post("/api/auth/login", handleJWTLogin);
+  app.post("/api/auth/logout", handleJWTLogout);
+  app.get("/api/auth/status", checkJWTAuthStatus);
   
   // Setup AI Analysis routes
   setupAIAnalysisRoutes(app);
@@ -31,11 +27,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   registerSitemapRoutes(app);
   
   // Setup database export routes (protected)
-  app.use('/api/export', requireAuth);
+  app.use('/api/export', requireJWTAuth);
   registerExportRoutes(app);
   
   // Protect all admin routes
-  app.use('/api/admin', requireAuth);
+  app.use('/api/admin', requireJWTAuth);
   
   // Brands API
   app.get("/api/brands", async (req, res) => {
