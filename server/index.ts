@@ -53,6 +53,7 @@ if (app.get("env") === "development") {
   await setupVite(app, server);
 
   const port = parseInt(process.env.PORT || "5000");
+
   server.listen(port, "0.0.0.0", () => {
     console.log(`Server running on port ${port}`);
     log(`serving on port ${port}`);

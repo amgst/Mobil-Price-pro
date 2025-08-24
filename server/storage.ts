@@ -222,9 +222,7 @@ export class DatabaseStorage implements IStorage {
         },
       ];
 
-      for (const mobile of sampleMobiles) {
-        await db.insert(mobiles).values(mobile);
-      }
+      await db.insert(mobiles).values(sampleMobiles);
     } catch (error) {
       console.log("Data initialization skipped or failed:", error);
     }

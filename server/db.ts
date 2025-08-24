@@ -1,17 +1,23 @@
-import { Pool, neonConfig } from '@neondatabase/serverless';
-import { drizzle } from 'drizzle-orm/neon-serverless';
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
 import * as schema from "../shared/schema.js";
 
 // Configure Neon for serverless environments
 neonConfig.fetchConnectionCache = true;
 
 // Set WebSocket constructor for Node.js environments
-if (typeof window === 'undefined' && !process.env.VERCEL && !process.env.REPLIT_DEPLOYMENT) {
-  import('ws').then(({ WebSocket }) => {
-    neonConfig.webSocketConstructor = WebSocket;
-  }).catch(() => {
-    console.warn('WebSocket constructor not available, using HTTP fallback');
-  });
+if (
+  typeof window === "undefined" &&
+  !process.env.VERCEL &&
+  !process.env.REPLIT_DEPLOYMENT
+) {
+  import("ws")
+    .then(({ WebSocket }) => {
+      neonConfig.webSocketConstructor = WebSocket;
+    })
+    .catch(() => {
+      console.warn("WebSocket constructor not available, using HTTP fallback");
+    });
 }
 
 // Get database URL from environment variables
@@ -27,9 +33,10 @@ const poolConfig = {
   // Vercel serverless optimizations
   ...(process.env.VERCEL && {
     maxUses: 1,
-    max: 1
-  })
+    max: 1,
+  }),
 };
 
 export const pool = new Pool(poolConfig);
+
 export const db = drizzle({ client: pool, schema });
