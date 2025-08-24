@@ -17,15 +17,20 @@ declare module "express-session" {
 }
 
 export function setupAuthMiddleware(app: Express) {
+  // Get environment variables
+  const isProduction = process.env.NODE_ENV === 'production';
+  const sessionSecret = process.env.SESSION_SECRET || 'mobile-admin-secret-key-dev';
+  
   // Setup session middleware
   app.use(session({
-    secret: 'mobile-admin-secret-key',
+    secret: sessionSecret,
     resave: false,
     saveUninitialized: false,
     cookie: {
-      secure: false, // Set to true in production with HTTPS
+      secure: isProduction, // Use secure cookies in production (HTTPS)
       httpOnly: true,
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      sameSite: 'lax' // Use lax for better compatibility with Netlify
     }
   }));
 }
