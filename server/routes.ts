@@ -14,7 +14,20 @@ import {
 } from "./jwt-auth-middleware.js";
 import { z } from "zod";
 
-export async function registerRoutes(app: Express): Promise<Server> {
+export function registerRoutes(app: Express): Server | Promise<Server> {
+  // Debug route for testing request body parsing
+  app.post('/api/debug/echo', (req, res) => {
+    console.log('Debug echo - Headers:', req.headers);
+    console.log('Debug echo - Body:', req.body);
+    console.log('Debug echo - Raw body type:', typeof req.body);
+    res.json({
+      headers: req.headers,
+      body: req.body,
+      bodyType: typeof req.body,
+      contentType: req.get('Content-Type')
+    });
+  });
+
   // Auth routes (public)
   app.post("/api/auth/login", handleJWTLogin);
   app.post("/api/auth/logout", handleJWTLogout);
@@ -325,6 +338,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     res.status(404).json({ message: 'API endpoint not found' });
   });
 
+  // For serverless, return the app directly without creating a server
+  if (process.env.NETLIFY || process.env.VERCEL) {
+    return app as any;
+  }
+  
+  // For local development, create and return a server
   const httpServer = createServer(app);
   return httpServer;
 }

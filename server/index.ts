@@ -38,8 +38,8 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes
-const server = await registerRoutes(app);
+// Initialize routes synchronously for serverless
+registerRoutes(app);
 
 // Error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -50,20 +50,23 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(status).json({ message });
 });
 
-// Dev-only setup
-if (app.get("env") === "development") {
-  await setupVite(app, server);
-
-  const port = parseInt(process.env.PORT || "5000");
-
-  server.listen(port, "0.0.0.0", () => {
-    console.log(`Server running on port ${port}`);
-    log(`serving on port ${port}`);
-  });
-} else {
-  // For Vercel production
-  serveStatic(app);
-}
-
-// ✅ Export app for Vercel
+// Export the app for serverless use
 export default app;
+
+// Dev server setup (only runs when directly executed)
+if (import.meta.url === `file://${process.argv[1]}`) {
+  (async () => {
+    const server = await registerRoutes(app);
+    
+    if (app.get("env") === "development") {
+      await setupVite(app, server);
+    } else {
+      serveStatic(app);
+    }
+    
+    const port = parseInt(process.env.PORT || "5000");
+    server.listen(port, "0.0.0.0", () => {
+      console.log(`Server running on port ${port}`);
+    });
+  })();
+}

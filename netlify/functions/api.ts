@@ -1,64 +1,48 @@
 import type { Handler } from "@netlify/functions";
-import express from "express";
-import { registerRoutes } from "../../server/routes.js";
+import serverless from 'serverless-http';
+import app from '../../server/index.js';
 
-// Create Express app
-const app = express();
+const handler = serverless(app, {
+  binary: false
+});
 
-// Register all routes
-registerRoutes(app);
-
-// Netlify function handler
-const handler: Handler = async (event, context) => {
-  // Convert Netlify event to Express request
-  const path = event.path.replace('/.netlify/functions/api', '');
-  const method = event.httpMethod;
-  
-  return new Promise((resolve) => {
-    const mockReq = {
-      url: path,
-      method: method,
-      headers: event.headers,
-      body: event.body ? JSON.parse(event.body) : undefined,
-      query: event.queryStringParameters || {}
-    } as any;
-
-    const mockRes = {
-      statusCode: 200,
-      headers: {},
-      body: '',
-      status: function(code: number) {
-        this.statusCode = code;
-        return this;
-      },
-      json: function(data: any) {
-        this.body = JSON.stringify(data);
-        this.headers['Content-Type'] = 'application/json';
-        resolve({
-          statusCode: this.statusCode,
-          headers: this.headers,
-          body: this.body
-        });
-        return this;
-      },
-      send: function(data: any) {
-        this.body = typeof data === 'string' ? data : JSON.stringify(data);
-        resolve({
-          statusCode: this.statusCode,
-          headers: this.headers,
-          body: this.body
-        });
-        return this;
-      },
-      setHeader: function(name: string, value: string) {
-        this.headers[name] = value;
-        return this;
+// Custom wrapper to handle body parsing
+const wrappedHandler = async (event: any, context: any) => {
+  try {
+    console.log('Original path:', event.path);
+    console.log('HTTP method:', event.httpMethod);
+    console.log('Headers:', JSON.stringify(event.headers, null, 2));
+    
+    // Parse JSON body if it's a string
+    if (event.body && typeof event.body === 'string') {
+      try {
+        event.body = JSON.parse(event.body);
+        console.log('Parsed body:', event.body);
+      } catch (e) {
+        console.log('Failed to parse body as JSON:', e);
       }
-    } as any;
-
-    // Handle the request
-    app(mockReq, mockRes);
-  });
+    }
+    
+    // Transform the path to remove /api prefix for internal routing
+    if (event.path.startsWith('/api/')) {
+      event.path = event.path.substring(4); // Remove '/api' prefix
+    }
+    
+    console.log('Transformed path:', event.path);
+    
+    const response = await handler(event, context);
+    
+    console.log('Response status:', response.statusCode);
+    console.log('Memory used:', process.memoryUsage().heapUsed / 1024 / 1024, 'MB');
+    
+    return response;
+  } catch (error) {
+    console.error('Handler error:', error);
+    return {
+      statusCode: 502,
+      body: JSON.stringify({ error: 'Internal server error' })
+    };
+  }
 };
 
-export { handler };
+export { wrappedHandler as handler };

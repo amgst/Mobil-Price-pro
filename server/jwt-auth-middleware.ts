@@ -64,6 +64,11 @@ export function requireJWTAuth(req: Request, res: Response, next: NextFunction) 
 export function handleJWTLogin(req: Request, res: Response) {
   const { username, password } = req.body;
   
+  console.log('Login attempt:', { username, password, body: req.body });
+  console.log('Expected credentials:', ADMIN_CREDENTIALS);
+  console.log('Username match:', username === ADMIN_CREDENTIALS.username);
+  console.log('Password match:', password === ADMIN_CREDENTIALS.password);
+  
   if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
     const jwtSecret = process.env.SESSION_SECRET || 'mobile-admin-secret-key-dev';
     
