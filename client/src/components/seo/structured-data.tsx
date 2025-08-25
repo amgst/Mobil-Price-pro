@@ -113,12 +113,12 @@ export function generateWebsiteSchema(): WebsiteSchema {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "MobilePrices.pk",
-    url: import.meta.env.VITE_SITE_URL || "https://mobileprices.pk",
+    name: "Mobile Price",
+        url: import.meta.env.VITE_SITE_URL || "https://mobile-price.com",
     description: "Pakistan's trusted mobile phone price comparison website",
     potentialAction: {
       "@type": "SearchAction",
-      target: `${import.meta.env.VITE_SITE_URL || "https://mobileprices.pk"}/search?q={search_term_string}`,
+      target: `${import.meta.env.VITE_SITE_URL || "https://mobile-price.com"}/search?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };
@@ -140,7 +140,7 @@ export function generateProductSchema(mobile: any): ProductSchema {
       price: mobile.price?.replace(/[₨,\s]/g, '') || "0",
       priceCurrency: "PKR",
       availability: "https://schema.org/InStock",
-      url: `${import.meta.env.VITE_SITE_URL || "https://mobileprices.pk"}/${mobile.brand.toLowerCase()}/${mobile.slug}`
+      url: `${import.meta.env.VITE_SITE_URL || "https://mobile-price.com"}/${mobile.brand.toLowerCase()}/${mobile.slug}`
     },
     aggregateRating: {
       "@type": "AggregateRating",
@@ -151,7 +151,7 @@ export function generateProductSchema(mobile: any): ProductSchema {
 }
 
 export function generateBreadcrumbSchema(breadcrumbs: { label: string; href: string }[]): BreadcrumbSchema {
-  const baseUrl = import.meta.env.VITE_SITE_URL || "https://mobileprices.pk";
+  const baseUrl = import.meta.env.VITE_SITE_URL || "https://mobile-price.com";
   
   return {
     "@context": "https://schema.org",
@@ -210,20 +210,20 @@ export function generateOrganizationSchema(): OrganizationSchema {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "MobilePrices.pk",
-    url: import.meta.env.VITE_SITE_URL || "https://mobileprices.pk",
-    logo: `${import.meta.env.VITE_SITE_URL || "https://mobileprices.pk"}/logo.png`,
+    name: "Mobile Price",
+        url: import.meta.env.VITE_SITE_URL || "https://mobile-price.com",
+        logo: `${import.meta.env.VITE_SITE_URL || "https://mobile-price.com"}/logo.png`,
     description: "Pakistan's most trusted mobile phone price comparison website providing latest mobile prices, specifications, reviews and comparisons.",
     sameAs: [
-      "https://facebook.com/mobileprices.pk",
-      "https://twitter.com/mobileprices_pk",
-      "https://instagram.com/mobileprices.pk"
+      "https://facebook.com/mobile.price.com",
+        "https://twitter.com/mobile_price_com",
+        "https://instagram.com/mobile.price.com"
     ]
   };
 }
 
 export function generateCollectionPageSchema(brand: any, mobiles: any[]): CollectionPageSchema {
-  const baseUrl = import.meta.env.VITE_SITE_URL || "https://mobileprices.pk";
+  const baseUrl = import.meta.env.VITE_SITE_URL || "https://mobile-price.com";
   
   return {
     "@context": "https://schema.org",

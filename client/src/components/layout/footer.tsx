@@ -34,7 +34,7 @@ export function Footer() {
           <div className="md:col-span-1">
             <div className="flex items-center mb-4">
               <Smartphone className="h-8 w-8 text-primary mr-2" />
-              <span className="text-xl font-bold">MobilePrices.pk</span>
+              <span className="text-xl font-bold">Mobile Price</span>
             </div>
             <p className="text-gray-400 text-sm mb-4">
               Pakistan's most trusted mobile phone price comparison website. Find the best deals on smartphones from all major brands.
@@ -125,7 +125,7 @@ export function Footer() {
         <div className="border-t border-gray-800 mt-8 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © 2025 MobilePrices.pk. All rights reserved.
+              © 2025 Mobile Price. All rights reserved.
             </p>
             <div className="flex space-x-6 mt-4 md:mt-0 text-sm">
               <Link 

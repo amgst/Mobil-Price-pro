@@ -17,7 +17,7 @@ export default function NotFound() {
   return (
     <>
       <SEOHead 
-        title="Page Not Found - MobilePrices.pk"
+        title="Page Not Found - Mobile Price"
         description="The page you're looking for doesn't exist. Browse our mobile phone collection and compare prices from top brands in Pakistan."
         canonical="/404"
         noIndex={true}

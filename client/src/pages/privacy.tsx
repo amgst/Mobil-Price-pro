@@ -65,7 +65,7 @@ function PrivacyPage() {
       icon: <Mail className="h-6 w-6" />,
       title: "Contact & Updates",
       content: [
-        "For privacy-related questions, contact us at privacy@mobileprices.pk",
+        "For privacy-related questions, contact us at privacy@mobile-price.com",
         "We will notify users of significant changes to this privacy policy",
         "Policy updates will be posted on this page with the effective date",
         "Continued use of our website constitutes acceptance of privacy policy changes",
@@ -95,8 +95,8 @@ function PrivacyPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Privacy Policy | MobilePrices.pk</title>
-        <meta name="description" content="Learn how MobilePrices.pk collects, uses, and protects your personal information. Our commitment to your privacy and data security." />
+        <title>Privacy Policy | Mobile Price</title>
+        <meta name="description" content="Learn how Mobile Price collects, uses, and protects your personal information. Our commitment to your privacy and data security." />
         <meta name="keywords" content="privacy policy, data protection, user privacy, mobile prices privacy" />
       </Helmet>
 
@@ -111,7 +111,7 @@ function PrivacyPage() {
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Your privacy is important to us. This policy explains how we collect, use, 
-            and protect your information when you use MobilePrices.pk.
+            and protect your information when you use Mobile Price.
           </p>
           <div className="mt-4 text-sm text-gray-500">
             <strong>Last Updated:</strong> January 1, 2025
@@ -123,7 +123,7 @@ function PrivacyPage() {
           <CardContent className="p-8 text-center">
             <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Privacy Commitment</h2>
             <p className="text-lg text-gray-600 mb-6">
-              MobilePrices.pk is committed to protecting your privacy and ensuring transparency 
+              Mobile Price is committed to protecting your privacy and ensuring transparency 
               in how we handle your personal information. We only collect information necessary 
               to provide you with the best mobile phone comparison service in Pakistan.
             </p>
@@ -255,7 +255,7 @@ function PrivacyPage() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <strong>Email:</strong> privacy@mobileprices.pk
+                <strong>Email:</strong> privacy@mobile-price.com
               </div>
               <div>
                 <strong>Phone:</strong> +92-321-1234567

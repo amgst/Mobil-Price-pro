@@ -42,7 +42,7 @@ export default function Export() {
       
       if (format === 'json') {
         url = '/api/export/json';
-        filename = `mobileprices-db-${new Date().toISOString().split('T')[0]}.json`;
+        filename = `mobile-price-db-${new Date().toISOString().split('T')[0]}.json`;
       } else if (format === 'csv' && type === 'brands') {
         url = '/api/export/brands/csv';
         filename = `brands-${new Date().toISOString().split('T')[0]}.csv`;
@@ -51,7 +51,7 @@ export default function Export() {
         filename = `mobiles-${new Date().toISOString().split('T')[0]}.csv`;
       } else if (format === 'sql') {
         url = '/api/export/sql';
-        filename = `mobileprices-backup-${new Date().toISOString().split('T')[0]}.sql`;
+        filename = `mobile-price-backup-${new Date().toISOString().split('T')[0]}.sql`;
       }
 
       const response = await fetch(url);

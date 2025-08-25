@@ -28,7 +28,7 @@ export default function AdminLogin() {
   return (
     <>
       <SEOHead 
-        title="Admin Access - MobilePrices.pk"
+        title="Admin Access - Mobile Price"
         description="Redirecting to admin panel"
         canonical="/admin/login"
         noIndex={true}

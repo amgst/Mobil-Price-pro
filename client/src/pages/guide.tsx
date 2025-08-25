@@ -103,7 +103,7 @@ function GuidePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Mobile Phone Buying Guide | MobilePrices.pk</title>
+        <title>Mobile Phone Buying Guide | Mobile Price</title>
         <meta name="description" content="Complete guide to buying smartphones in Pakistan. Learn about specifications, price ranges, and make informed decisions with expert advice." />
         <meta name="keywords" content="mobile buying guide, smartphone guide, phone buying tips, mobile specifications guide" />
       </Helmet>

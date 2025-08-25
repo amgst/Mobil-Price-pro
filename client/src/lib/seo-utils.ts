@@ -59,7 +59,7 @@ function extractMainCamera(cameraText: string): string {
  * Generate canonical URL
  */
 export function generateCanonicalUrl(path: string): string {
-  const baseUrl = import.meta.env.VITE_SITE_URL || 'https://mobileprices.pk';
+  const baseUrl = import.meta.env.VITE_SITE_URL || 'https://mobile-price.com';
   return `${baseUrl}${path}`;
 }
 
@@ -73,7 +73,7 @@ export function generateOGImageUrl(mobile: any): string {
   }
   
   // Fallback to default OG image
-  const baseUrl = import.meta.env.VITE_SITE_URL || 'https://mobileprices.pk';
+  const baseUrl = import.meta.env.VITE_SITE_URL || 'https://mobile-price.com';
   return `${baseUrl}/images/og-default-mobile.jpg`;
 }
 

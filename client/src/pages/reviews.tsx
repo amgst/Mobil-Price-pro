@@ -54,7 +54,7 @@ function ReviewsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Mobile Phone Reviews | MobilePrices.pk</title>
+        <title>Mobile Phone Reviews | Mobile Price</title>
         <meta name="description" content="Read expert mobile phone reviews, ratings, and detailed analysis of latest smartphones. Get authentic insights before buying your next phone." />
         <meta name="keywords" content="mobile reviews, phone reviews, smartphone reviews, mobile ratings, phone comparison" />
       </Helmet>

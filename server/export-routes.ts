@@ -23,7 +23,7 @@ export function registerExportRoutes(app: Express) {
       };
 
       res.setHeader('Content-Type', 'application/json');
-      res.setHeader('Content-Disposition', `attachment; filename="mobileprices-db-${new Date().toISOString().split('T')[0]}.json"`);
+      res.setHeader('Content-Disposition', `attachment; filename="mobile-price-db-${new Date().toISOString().split('T')[0]}.json"`);
       
       res.json(exportData);
     } catch (error) {
@@ -134,7 +134,7 @@ export function registerExportRoutes(app: Express) {
         storage.getAllMobiles()
       ]);
 
-      let sql = `-- MobilePrices.pk Database Backup
+      let sql = `-- Mobile Price Database Backup
 -- Generated on: ${new Date().toISOString()}
 -- Total Brands: ${brands.length}
 -- Total Mobiles: ${mobiles.length}
@@ -206,7 +206,7 @@ SELECT setval('mobiles_id_seq', (SELECT MAX(CAST(SUBSTRING(id FROM 1 FOR 8) AS I
 `;
 
       res.setHeader('Content-Type', 'text/plain');
-      res.setHeader('Content-Disposition', `attachment; filename="mobileprices-backup-${new Date().toISOString().split('T')[0]}.sql"`);
+      res.setHeader('Content-Disposition', `attachment; filename="mobile-price-backup-${new Date().toISOString().split('T')[0]}.sql"`);
       
       res.send(sql);
     } catch (error) {

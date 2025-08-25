@@ -14,8 +14,8 @@ function ContactPage() {
       icon: <Mail className="h-6 w-6" />,
       title: "Email Support",
       description: "Get detailed responses within 24 hours",
-      contact: "support@mobileprices.pk",
-      action: "mailto:support@mobileprices.pk"
+      contact: "support@mobile-price.com",
+    action: "mailto:support@mobile-price.com"
     },
     {
       icon: <Phone className="h-6 w-6" />,
@@ -79,8 +79,8 @@ function ContactPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Contact Us | MobilePrices.pk</title>
-        <meta name="description" content="Get in touch with MobilePrices.pk team. Contact us for support, feedback, or any questions about mobile phones and pricing information." />
+        <title>Contact Us | Mobile Price</title>
+        <meta name="description" content="Get in touch with Mobile Price team. Contact us for support, feedback, or any questions about mobile phones and pricing information." />
         <meta name="keywords" content="contact us, mobile prices support, phone help, customer service" />
       </Helmet>
 

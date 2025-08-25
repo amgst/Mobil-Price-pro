@@ -10,7 +10,7 @@ function TermsPage() {
       icon: <Users className="h-6 w-6" />,
       title: "Acceptance of Terms",
       content: [
-        "By accessing and using MobilePrices.pk, you accept and agree to be bound by these Terms of Service",
+        "By accessing and using Mobile Price, you accept and agree to be bound by these Terms of Service",
         "If you do not agree to these terms, please do not use our website",
         "We reserve the right to modify these terms at any time with notice to users",
         "Continued use of the website after changes constitutes acceptance of new terms",
@@ -21,7 +21,7 @@ function TermsPage() {
       icon: <FileText className="h-6 w-6" />,
       title: "Description of Service",
       content: [
-        "MobilePrices.pk provides mobile phone price comparison and specification information",
+        "Mobile Price provides mobile phone price comparison and specification information",
         "We aggregate pricing data from various retailers and manufacturers in Pakistan",
         "Our service includes detailed phone specifications, reviews, and buying guides",
         "All content is provided for informational purposes only",
@@ -54,7 +54,7 @@ function TermsPage() {
       icon: <Gavel className="h-6 w-6" />,
       title: "Limitation of Liability",
       content: [
-        "MobilePrices.pk is provided 'as is' without warranties of any kind",
+        "Mobile Price is provided 'as is' without warranties of any kind",
         "We are not liable for any direct, indirect, or consequential damages",
         "We do not guarantee uninterrupted or error-free operation of the website",
         "Users assume all risks associated with use of the information provided",
@@ -65,7 +65,7 @@ function TermsPage() {
       icon: <Mail className="h-6 w-6" />,
       title: "Contact & Disputes",
       content: [
-        "For questions about these terms, contact us at legal@mobileprices.pk",
+        "For questions about these terms, contact us at legal@mobile-price.com",
         "Any disputes will be resolved through arbitration in Lahore, Pakistan",
         "These terms are governed by the laws of Pakistan",
         "If any provision is found invalid, the remaining terms continue to apply",
@@ -86,7 +86,7 @@ function TermsPage() {
   ];
 
   const intellectualProperty = [
-    "All content on MobilePrices.pk is owned by us or our content suppliers",
+    "All content on Mobile Price is owned by us or our content suppliers",
     "You may not reproduce, distribute, or create derivative works without permission",
     "Trademarks and logos of mobile phone brands belong to their respective owners",
     "Product images and specifications are used under fair use for comparison purposes",
@@ -96,8 +96,8 @@ function TermsPage() {
   return (
     <div className="min-h-screen bg-gray-50">
       <Helmet>
-        <title>Terms of Service | MobilePrices.pk</title>
-        <meta name="description" content="Terms of Service for MobilePrices.pk. Learn about your rights and responsibilities when using our mobile phone comparison service." />
+        <title>Terms of Service | Mobile Price</title>
+        <meta name="description" content="Terms of Service for Mobile Price. Learn about your rights and responsibilities when using our mobile phone comparison service." />
         <meta name="keywords" content="terms of service, terms and conditions, user agreement, mobile prices terms" />
       </Helmet>
 
@@ -111,7 +111,7 @@ function TermsPage() {
             <h1 className="text-4xl font-bold text-gray-900">Terms of Service</h1>
           </div>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-            Please read these Terms of Service carefully before using MobilePrices.pk. 
+            Please read these Terms of Service carefully before using Mobile Price. 
             These terms govern your use of our website and services.
           </p>
           <div className="mt-4 text-sm text-gray-500">
@@ -179,7 +179,7 @@ function TermsPage() {
           </CardHeader>
           <CardContent>
             <p className="text-gray-700 mb-4">
-              The following activities are strictly prohibited when using MobilePrices.pk:
+              The following activities are strictly prohibited when using Mobile Price:
             </p>
             <ul className="space-y-2">
               {prohibitedUses.map((use, index) => (
@@ -222,7 +222,7 @@ function TermsPage() {
               <div>
                 <h4 className="font-semibold text-gray-900 mb-2">Price Information</h4>
                 <p className="text-gray-700">
-                  Prices displayed on MobilePrices.pk are collected from various sources and may not reflect 
+                  Prices displayed on Mobile Price are collected from various sources and may not reflect 
                   current retail prices. Always verify pricing directly with retailers before making a purchase.
                 </p>
               </div>
@@ -284,7 +284,7 @@ function TermsPage() {
             </p>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <strong>Email:</strong> legal@mobileprices.pk
+                <strong>Email:</strong> legal@mobile-price.com
               </div>
               <div>
                 <strong>Phone:</strong> +92-321-1234567
