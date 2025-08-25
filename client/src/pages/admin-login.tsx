@@ -1,4 +1,4 @@
-import React from "react";
+import * as React from "react";
 import { useLocation } from "wouter";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SEOHead } from "@/components/seo/seo-head";

@@ -307,7 +307,7 @@ export default function Export() {
                 <CardContent>
                   <div className="space-y-3">
                     {Object.entries(stats.brandDistribution)
-                      .sort(([,a], [,b]) => b - a)
+                      .sort(([,a], [,b]) => (b as number) - (a as number))
                       .slice(0, 8)
                       .map(([brand, count]) => (
                       <div key={brand} className="flex items-center justify-between">

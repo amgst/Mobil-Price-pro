@@ -1,4 +1,4 @@
-import type { Handler } from "@netlify/functions";
+import type { Handler } from '@netlify/functions';
 import serverless from 'serverless-http';
 import app from '../../server/index.ts';
 
@@ -30,7 +30,7 @@ const wrappedHandler = async (event: any, context: any) => {
     
     const response = await handler(event, context);
     
-    console.log('Response status:', response.statusCode);
+    console.log('Response status:', (response as { statusCode?: number }).statusCode);
     console.log('Memory used:', process.memoryUsage().heapUsed / 1024 / 1024, 'MB');
     
     return response;

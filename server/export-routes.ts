@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "./storage.js";
-import csvWriter from "csv-writer";
+import { createObjectCsvStringifier } from "csv-writer";
 
 export function registerExportRoutes(app: Express) {
   // Export all data as JSON
@@ -37,7 +37,7 @@ export function registerExportRoutes(app: Express) {
     try {
       const brands = await storage.getAllBrands();
       
-      const csvStringifier = csvWriter.createObjectCsvStringifier({
+      const csvStringifier = createObjectCsvStringifier({
         header: [
           { id: 'id', title: 'ID' },
           { id: 'name', title: 'Name' },
@@ -91,7 +91,7 @@ export function registerExportRoutes(app: Express) {
         createdAt: mobile.createdAt
       }));
 
-      const csvStringifier = csvWriter.createObjectCsvStringifier({
+      const csvStringifier = createObjectCsvStringifier({
         header: [
           { id: 'id', title: 'ID' },
           { id: 'name', title: 'Name' },

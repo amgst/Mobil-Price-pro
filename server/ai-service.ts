@@ -60,7 +60,7 @@ export class AIService {
         Make it authentic and based on the actual specifications provided.
       `;
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
@@ -138,7 +138,7 @@ export class AIService {
         Make specifications realistic and competitive for the current market.
       `;
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
@@ -236,7 +236,7 @@ export class AIService {
         Make specifications realistic for this brand and phone category.
       `;
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {
@@ -355,7 +355,7 @@ export class AIService {
         Return JSON array of phone names: ["Phone Name 1", "Phone Name 2", ...]
       `;
 
-      const response = await openai.chat.completions.create({
+      const response = await openai!.chat.completions.create({
         model: "gpt-4o",
         messages: [
           {

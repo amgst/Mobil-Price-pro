@@ -16,7 +16,7 @@ export function setupAIAnalysisRoutes(app: Express) {
       }
       
       const { mobileId } = req.body;
-      const mobile = await storage.getMobile(mobileId);
+      const mobile = await storage.getMobileById(mobileId);
       
       if (!mobile) {
         return res.status(404).json({ error: 'Mobile not found' });
@@ -75,7 +75,7 @@ Consider factors like megapixel count, aperture, sensor size, optical image stab
       }
       
       const { mobileId } = req.body;
-      const mobile = await storage.getMobile(mobileId);
+      const mobile = await storage.getMobileById(mobileId);
       
       if (!mobile) {
         return res.status(404).json({ error: 'Mobile not found' });
@@ -135,7 +135,7 @@ Consider resolution, PPI, panel type (OLED/LCD), refresh rate, brightness levels
       }
       
       const { targetMobileId, candidateIds } = req.body;
-      const targetMobile = await storage.getMobile(targetMobileId);
+      const targetMobile = await storage.getMobileById(targetMobileId);
       
       if (!targetMobile) {
         return res.status(404).json({ error: 'Target mobile not found' });
@@ -144,7 +144,7 @@ Consider resolution, PPI, panel type (OLED/LCD), refresh rate, brightness levels
       const results = [];
       
       for (const candidateId of candidateIds.slice(0, 5)) { // Limit for performance
-        const candidate = await storage.getMobile(candidateId);
+        const candidate = await storage.getMobileById(candidateId);
         if (!candidate) continue;
 
         const targetSpecs = {
@@ -263,7 +263,7 @@ Describe the phone's visual appearance in detail, focusing on design elements th
       
       // Match against available phones
       for (const mobileId of mobileIds.slice(0, 8)) { // Limit for performance
-        const mobile = await storage.getMobile(mobileId);
+        const mobile = await storage.getMobileById(mobileId);
         if (!mobile) continue;
 
         const designSpecs = {
