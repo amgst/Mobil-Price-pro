@@ -38,9 +38,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// Initialize routes synchronously for serverless
-registerRoutes(app);
-
 // Error handler
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   const status = err.status || err.statusCode || 500;
@@ -50,23 +47,29 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   res.status(status).json({ message });
 });
 
+// Initialize routes for both serverless and local development
+if (process.env.NETLIFY || process.env.VERCEL) {
+  // Serverless environment - just register routes
+  registerRoutes(app);
+} else {
+  // Local development - create server and setup Vite/static serving
+  if (import.meta.url === `file://${process.argv[1]}`) {
+    (async () => {
+      const server = registerRoutes(app) as any;
+      
+      if (app.get("env") === "development") {
+        await setupVite(app, server);
+      } else {
+        serveStatic(app);
+      }
+      
+      const port = parseInt(process.env.PORT || "5000");
+      server.listen(port, "0.0.0.0", () => {
+        console.log(`Server running on port ${port}`);
+      });
+    })();
+  }
+}
+
 // Export the app for serverless use
 export default app;
-
-// Dev server setup (only runs when directly executed)
-if (import.meta.url === `file://${process.argv[1]}`) {
-  (async () => {
-    const server = await registerRoutes(app);
-    
-    if (app.get("env") === "development") {
-      await setupVite(app, server);
-    } else {
-      serveStatic(app);
-    }
-    
-    const port = parseInt(process.env.PORT || "5000");
-    server.listen(port, "0.0.0.0", () => {
-      console.log(`Server running on port ${port}`);
-    });
-  })();
-}
