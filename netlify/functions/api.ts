@@ -23,10 +23,8 @@ const wrappedHandler = async (event: any, context: any) => {
       }
     }
     
-    // Transform the path to remove /api prefix for internal routing
-    if (event.path.startsWith('/api/')) {
-      event.path = event.path.substring(4); // Remove '/api' prefix
-    }
+    // Keep the full path including /api prefix for Express routing
+    // The Express routes are defined with /api prefix, so we need to preserve it
     
     console.log('Transformed path:', event.path);
     
