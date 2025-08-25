@@ -1,6 +1,6 @@
 import type { Express, Request, Response } from "express";
 import { storage } from "./storage.js";
-import * as csvWriter from "csv-writer";
+import csvWriter from "csv-writer";
 
 export function registerExportRoutes(app: Express) {
   // Export all data as JSON

@@ -29,7 +29,7 @@
 
 [functions]
   node_bundler = "esbuild"
-  external_node_modules = ["express"]
+  external_node_modules = ["express", "@neondatabase/serverless", "ws", "dotenv", "cookie-parser", "openai", "jsonwebtoken", "csv-writer", "lightningcss"]
 
 [[headers]]
   for = "/*"

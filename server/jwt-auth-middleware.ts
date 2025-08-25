@@ -68,7 +68,6 @@ export function handleJWTLogin(req: Request, res: Response) {
     message: 'Login successful - Open Access',
     redirectTo: '/admin'
   });
-  }
 }
 
 // Logout route handler
