@@ -4,7 +4,6 @@ dotenv.config();
 import express, { type Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
 import { registerRoutes } from "./routes.js";
-import { setupVite, serveStatic, log } from "./vite.js";
 
 const app = express();
 app.use(express.json());
@@ -31,7 +30,7 @@ app.use((req, res, next) => {
         logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
       }
       if (logLine.length > 80) logLine = logLine.slice(0, 79) + "…";
-      log(logLine);
+      console.log(logLine);
     }
   });
 
@@ -55,6 +54,7 @@ if (process.env.NETLIFY || process.env.VERCEL) {
   // Local development - create server and setup Vite/static serving
   if (import.meta.url === `file://${process.argv[1]}`) {
     (async () => {
+      const { setupVite, serveStatic } = await import("./vite.js");
       const server = registerRoutes(app) as any;
       
       if (app.get("env") === "development") {
