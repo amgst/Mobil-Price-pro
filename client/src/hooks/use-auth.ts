@@ -11,6 +11,7 @@ export function useAuth() {
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
 
+  // Always return authenticated status for open access
   const { data: authStatus, isLoading } = useQuery<AuthStatus>({
     queryKey: ["/api/auth/status"],
     retry: false,
@@ -25,12 +26,11 @@ export function useAuth() {
       });
     },
     onSuccess: () => {
+      // No need to redirect on logout for open access
       queryClient.setQueryData(["/api/auth/status"], {
-        isAuthenticated: false,
-        username: null,
+        isAuthenticated: true,
+        username: 'admin',
       });
-      queryClient.invalidateQueries({ queryKey: ["/api/auth/status"] });
-      setLocation("/admin/login");
     },
   });
 
@@ -39,9 +39,9 @@ export function useAuth() {
   };
 
   return {
-    isAuthenticated: authStatus?.isAuthenticated || false,
-    username: authStatus?.username,
-    isLoading,
+    isAuthenticated: true, // Always authenticated for open access
+    username: 'admin',
+    isLoading: false,
     logout,
     isLoggingOut: logoutMutation.isPending,
   };

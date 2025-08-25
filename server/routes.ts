@@ -7,7 +7,6 @@ import { registerExportRoutes } from "./export-routes.js";
 import { insertBrandSchema, insertMobileSchema } from "../shared/schema.js";
 import { aiService } from "./ai-service.js";
 import { 
-  requireJWTAuth, 
   handleJWTLogin, 
   handleJWTLogout, 
   checkJWTAuthStatus 
@@ -39,12 +38,8 @@ export function registerRoutes(app: Express): Server | Promise<Server> {
   // Setup SEO routes (sitemap, robots.txt)
   registerSitemapRoutes(app);
   
-  // Setup database export routes (protected)
-  app.use('/api/export', requireJWTAuth);
+  // Setup database export routes (now open)
   registerExportRoutes(app);
-  
-  // Protect all admin routes
-  app.use('/api/admin', requireJWTAuth);
   
   // Brands API
   app.get("/api/brands", async (req, res) => {

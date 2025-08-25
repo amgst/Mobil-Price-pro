@@ -60,44 +60,14 @@ export function requireJWTAuth(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-// Login route handler
+// Login route handler - Always allow access (no authentication required)
 export function handleJWTLogin(req: Request, res: Response) {
-  const { username, password } = req.body;
-  
-  console.log('Login attempt:', { username, password, body: req.body });
-  console.log('Expected credentials:', ADMIN_CREDENTIALS);
-  console.log('Username match:', username === ADMIN_CREDENTIALS.username);
-  console.log('Password match:', password === ADMIN_CREDENTIALS.password);
-  
-  if (username === ADMIN_CREDENTIALS.username && password === ADMIN_CREDENTIALS.password) {
-    const jwtSecret = process.env.SESSION_SECRET || 'mobile-admin-secret-key-dev';
-    
-    // Create JWT token
-    const token = jwt.sign(
-      { username },
-      jwtSecret,
-      { expiresIn: '24h' }
-    );
-    
-    // Set HTTP-only cookie
-    res.cookie('authToken', token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'lax',
-      maxAge: 24 * 60 * 60 * 1000 // 24 hours
-    });
-    
-    res.json({ 
-      success: true,
-      message: 'Login successful',
-      redirectTo: '/admin',
-      token // Also return token for client-side storage if needed
-    });
-  } else {
-    res.status(401).json({ 
-      success: false,
-      message: 'Invalid username or password'
-    });
+  // Always return success for open access
+  res.json({ 
+    success: true,
+    message: 'Login successful - Open Access',
+    redirectTo: '/admin'
+  });
   }
 }
 
@@ -108,29 +78,10 @@ export function handleJWTLogout(req: Request, res: Response) {
   res.json({ success: true, message: 'Logged out successfully' });
 }
 
-// Check auth status
+// Check auth status - Always return authenticated for open access
 export function checkJWTAuthStatus(req: Request, res: Response) {
-  const token = req.headers.authorization?.replace('Bearer ', '') || req.cookies?.authToken;
-  
-  if (!token) {
-    return res.json({
-      isAuthenticated: false,
-      username: null
-    });
-  }
-
-  try {
-    const jwtSecret = process.env.SESSION_SECRET || 'mobile-admin-secret-key-dev';
-    const decoded = jwt.verify(token, jwtSecret) as { username: string };
-    
-    res.json({
-      isAuthenticated: true,
-      username: decoded.username
-    });
-  } catch (error) {
-    res.json({
-      isAuthenticated: false,
-      username: null
-    });
-  }
+  res.json({
+    isAuthenticated: true,
+    username: 'admin'
+  });
 }

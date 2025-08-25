@@ -5,8 +5,7 @@ Allow: /
 Sitemap: https://mobileprices.pk/sitemap.xml
 Sitemap: https://mobileprices.pk/sitemap-index.xml
 
-# Block admin and API routes
-Disallow: /admin/
+# Block API routes but allow admin access (no authentication required)
 Disallow: /api/
 
 # Allow all search engines to crawl

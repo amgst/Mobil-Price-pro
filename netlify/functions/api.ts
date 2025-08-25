@@ -1,6 +1,6 @@
 import type { Handler } from "@netlify/functions";
 import serverless from 'serverless-http';
-import app from '../../server/index.js';
+import app from '../../server/index.ts';
 
 const handler = serverless(app, {
   binary: false
