@@ -25,6 +25,9 @@ const wrappedHandler = async (event: any, context: any) => {
     
     // Keep the full path including /api prefix for Express routing
     // The Express routes are defined with /api prefix, so we need to preserve it
+    if (!event.path.startsWith('/api')) {
+      event.path = `/api${event.path}`;
+    }
     
     console.log('Transformed path:', event.path);
     
