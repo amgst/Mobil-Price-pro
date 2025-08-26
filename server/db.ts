@@ -3,24 +3,27 @@ import { drizzle } from "drizzle-orm/neon-serverless";
 import * as schema from "../shared/schema.js";
 
 // Configure Neon for serverless environments
+
 neonConfig.fetchConnectionCache = true;
 
-// Set WebSocket constructor for Node.js environments
-if (
-  typeof window === "undefined" &&
-  !process.env.VERCEL &&
-  !process.env.REPLIT_DEPLOYMENT
-) {
-  import("ws")
-    .then(({ WebSocket }) => {
-      neonConfig.webSocketConstructor = WebSocket;
-    })
-    .catch(() => {
-      console.warn("WebSocket constructor not available, using HTTP fallback");
-    });
+// Configure for Replit environment
+if (typeof window === "undefined") {
+  // Disable WebSocket for Replit to avoid SSL issues
+  neonConfig.useSecureWebSocket = false;
+  neonConfig.pipelineConnect = false;
+  
+  if (!process.env.VERCEL && !process.env.REPLIT_DEPLOYMENT) {
+    import("ws")
+      .then(({ WebSocket }) => {
+        neonConfig.webSocketConstructor = WebSocket;
+      })
+      .catch(() => {
+        console.warn("WebSocket constructor not available, using HTTP fallback");
+      });
+  }
 }
 
-// Lazy initialization to ensure environment variables are loaded
+
 let _pool: Pool | null = null;
 let _db: ReturnType<typeof drizzle> | null = null;
 
