@@ -3,7 +3,6 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage.js";
 import { setupAIAnalysisRoutes } from "./ai-analysis-routes.js";
 import { registerSitemapRoutes } from "./sitemap-routes.js";
-import { registerHealthCheck } from "./health.js";
 import { registerExportRoutes } from "./export-routes.js";
 import { insertBrandSchema, insertMobileSchema } from "../shared/schema.js";
 import { aiService } from "./ai-service.js";
@@ -41,9 +40,6 @@ export function registerRoutes(app: Express): Server | Promise<Server> {
   
   // Setup database export routes (now open)
   registerExportRoutes(app);
-
-  // Health check
-  registerHealthCheck(app);
   
   // Brands API
   

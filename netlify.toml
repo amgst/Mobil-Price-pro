@@ -8,11 +8,6 @@
   NPM_VERSION = "9"
 
 [[redirects]]
-  from = "/hello"
-  to = "/.netlify/functions/hello"
-  status = 200
-
-[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
   status = 200
