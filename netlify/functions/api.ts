@@ -1,8 +1,15 @@
 import type { Handler } from '@netlify/functions';
 import serverless from 'serverless-http';
+import express from 'express';
 import app from '../../server/index.ts';
 
-const handler = serverless(app, {
+// Create a new Express app to act as a prefixer
+const api = express();
+
+// Mount the main app under the /api prefix
+api.use('/api', app);
+
+const handler = serverless(api, {
   binary: false
 });
 
@@ -22,14 +29,6 @@ const wrappedHandler = async (event: any, context: any) => {
         console.log('Failed to parse body as JSON:', e);
       }
     }
-    
-    // Keep the full path including /api prefix for Express routing
-    // The Express routes are defined with /api prefix, so we need to preserve it
-    if (!event.path.startsWith('/api')) {
-      event.path = `/api${event.path}`;
-    }
-    
-    console.log('Transformed path:', event.path);
     
     const response = await handler(event, context);
     
